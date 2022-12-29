@@ -15,6 +15,6 @@ class MyDB
 {
     public function myMethod(string $param): string
     {
-        return '';
+        return 'test';
     }
 }

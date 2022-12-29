@@ -13,8 +13,4 @@ namespace vadimcontenthunter\MyDB;
  */
 class MyDB
 {
-    public function myMethod(string $param): string
-    {
-        return 'test';
-    }
 }

@@ -35,7 +35,7 @@ class DbTest extends TestCase
             print "Error!: " . $e->getMessage() . "<br/>";
             die();
         }
-        $this->assertEquals(true, true);
+        $this->assertTrue(true);
     }
 
     /** @test */
@@ -62,8 +62,9 @@ class DbTest extends TestCase
             $dbh->exec("INSERT into $tableName (name, last_name, age) values ('Bobchenko', 'Kenaki', 32)");
             $dbh->commit();
         } catch (\Exception $e) {
-            $dbh->rollBack();
-            echo "Ошибка: " . $e->getMessage();
+            $is = $dbh->rollBack() ?? null;
+            echo "Ошибка: " . $e->getMessage() . PHP_EOL;
+            echo "is: " . (string) $is;
         }
 
         $this->assertEquals(true, true);

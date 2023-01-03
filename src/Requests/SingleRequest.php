@@ -6,25 +6,25 @@ namespace vadimcontenthunter\MyDB\Requests;
 
 use Psr\Log\NullLogger;
 use Psr\Log\LoggerInterface;
-use vadimcontenthunter\MyDB\RequestInterface;
-use vadimcontenthunter\MyDB\ConnectorInterface;
-use vadimcontenthunter\MyDB\SQLQueryBuilderInterface;
+use vadimcontenthunter\MyDB\Interfaces\Request;
+use vadimcontenthunter\MyDB\Interfaces\Connector;
+use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder;
 
 /**
  * @author    Vadim Volkovskyi <project.k.vadim@gmail.com>
  * @copyright (c) Vadim Volkovskyi 2022
  */
-class SingleRequest implements RequestInterface
+class SingleRequest implements Request
 {
     protected string $query;
 
     public function __construct(
-        protected ConnectorInterface $connectorInterface,
+        protected Connector $connectorInterface,
         protected LoggerInterface $loggerInterface = new NullLogger()
     ) {
     }
 
-    public function singleQuery(SQLQueryBuilderInterface $query_builder): SingleRequest
+    public function singleQuery(SQLQueryBuilder $query_builder): SingleRequest
     {
         return $this;
     }

@@ -6,7 +6,7 @@ namespace vadimcontenthunter;
 
 use Psr\Log\NullLogger;
 use Psr\Log\LoggerInterface;
-use vadimcontenthunter\MyDB\ConnectorInterface;
+use vadimcontenthunter\MyDB\Interfaces\Connector;
 use vadimcontenthunter\MyDB\Requests\SingleRequest;
 use vadimcontenthunter\MyDB\Requests\TransactionalRequests;
 
@@ -17,18 +17,18 @@ use vadimcontenthunter\MyDB\Requests\TransactionalRequests;
 class DB
 {
     public function __construct(
-        protected ConnectorInterface $connectorInterface,
+        protected Connector $connector,
         protected LoggerInterface $loggerInterface = new NullLogger()
     ) {
     }
 
     public function transactionalRequests(): TransactionalRequests
     {
-        return new TransactionalRequests($this->connectorInterface, $this->loggerInterface);
+        return new TransactionalRequests($this->connector, $this->loggerInterface);
     }
 
     public function singleRequest(): SingleRequest
     {
-        return new SingleRequest($this->connectorInterface, $this->loggerInterface);
+        return new SingleRequest($this->connector, $this->loggerInterface);
     }
 }

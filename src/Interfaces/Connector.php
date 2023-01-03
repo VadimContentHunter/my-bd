@@ -2,13 +2,15 @@
 
 declare(strict_types=1);
 
-namespace vadimcontenthunter\MyDB;
+namespace vadimcontenthunter\MyDB\Interfaces;
+
+use PDO;
 
 /**
  * @author    Vadim Volkovskyi <project.k.vadim@gmail.com>
  * @copyright (c) Vadim Volkovskyi 2022
  */
-interface RequestInterface
+interface Connector
 {
-    public function send(): mixed;
+    public function connect(): PDO;
 }

@@ -8,6 +8,9 @@
             "email": "project.k.vadim@gmail.com"
         }
     ],
+    "require": {
+        "psr/log":"^3.0"
+    },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.7",
         "phpunit/phpunit": "^9.5.16",

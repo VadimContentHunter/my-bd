@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace vadimcontenthunter\MyDB;
 
 /**
- * MyDB
- *
- * @package   MyDB
  * @author    Vadim Volkovskyi <project.k.vadim@gmail.com>
  * @copyright (c) Vadim Volkovskyi 2022
  */
-class MyDB
+interface Connector
 {
+    public function connect(): PDO;
 }

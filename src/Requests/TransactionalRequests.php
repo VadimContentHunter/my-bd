@@ -16,6 +16,9 @@ use vadimcontenthunter\MyDB\SQLQueryBuilderInterface;
  */
 class TransactionalRequests implements RequestInterface
 {
+    /**
+     * @var array<string>
+     */
     protected array $queries = [];
 
     public function __construct(

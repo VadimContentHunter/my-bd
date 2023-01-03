@@ -19,7 +19,7 @@ class SingleRequest implements RequestInterface
     protected string $query;
 
     public function __construct(
-        protected ConnectorInterface $ConnectorInterface,
+        protected ConnectorInterface $connectorInterface,
         protected LoggerInterface $loggerInterface = new NullLogger()
     ) {
     }

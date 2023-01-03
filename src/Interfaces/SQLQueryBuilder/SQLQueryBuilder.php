@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace vadimcontenthunter\MyDB\Interfaces;
+namespace vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder;
 
 /**
  * @author    Vadim Volkovskyi <project.k.vadim@gmail.com>

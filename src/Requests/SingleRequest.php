@@ -8,7 +8,7 @@ use Psr\Log\NullLogger;
 use Psr\Log\LoggerInterface;
 use vadimcontenthunter\MyDB\Interfaces\Request;
 use vadimcontenthunter\MyDB\Interfaces\Connector;
-use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder;
+use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\SQLQueryBuilder;
 
 /**
  * @author    Vadim Volkovskyi <project.k.vadim@gmail.com>

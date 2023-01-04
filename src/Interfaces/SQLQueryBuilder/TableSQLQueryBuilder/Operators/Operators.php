@@ -12,8 +12,14 @@ use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\SQLQueryBuilder;
  */
 interface Operators extends SQLQueryBuilder
 {
+    /**
+     * @param string[] $field_attribute
+     */
     public function add(string $field_name, string $data_type, array $field_attribute): Operators;
 
+    /**
+     * @param string[] $field_attribute
+     */
     public function modifyColumn(string $field_name, string $data_type, array $field_attribute): Operators;
 
     public function dropColumn(string $field_name): Operators;

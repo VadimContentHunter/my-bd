@@ -14,5 +14,8 @@ interface OperatorOptionsInsert extends SQLQueryBuilder
 {
     public function addValues(string $field_name, mixed $value): OperatorOptionsInsert;
 
+    /**
+     * @param array<string,array<string>|string> $values
+     */
     public function setValues(array $values): OperatorOptionsInsert;
 }

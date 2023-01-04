@@ -20,6 +20,9 @@ interface Operators extends SQLQueryBuilder
 
     public function not(): Operators;
 
+    /**
+     * @param string[]|string $value
+     */
     public function in(array|string $value, bool $not = false): Operators;
 
     public function between(mixed $value_a, mixed $value_b, bool $not = false): Operators;

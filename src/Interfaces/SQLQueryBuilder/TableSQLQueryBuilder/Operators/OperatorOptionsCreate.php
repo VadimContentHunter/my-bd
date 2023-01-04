@@ -12,5 +12,8 @@ use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\SQLQueryBuilder;
  */
 interface OperatorOptionsCreate extends SQLQueryBuilder
 {
+    /**
+     * @param string[] $field_attribute
+     */
     public function addField(string $field_name, string $data_type, array $field_attribute): OperatorOptionsCreate;
 }

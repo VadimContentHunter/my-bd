@@ -6,6 +6,9 @@ namespace vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\DataSQLQueryBuilder
 
 use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\SQLQueryBuilder;
 use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\DataSQLQueryBuilder\Operators\Operators;
+use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\DataSQLQueryBuilder\Operators\OperatorOptionsInsert;
+use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\DataSQLQueryBuilder\Operators\OperatorOptionsSelect;
+use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\DataSQLQueryBuilder\Operators\OperatorOptionsUpdate;
 
 /**
  * @author    Vadim Volkovskyi <project.k.vadim@gmail.com>
@@ -13,6 +16,9 @@ use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\DataSQLQueryBuilder\Opera
  */
 interface DataSQLQueryBuilder extends SQLQueryBuilder
 {
+    /**
+     * @param array<string> $field_names
+     */
     public function insert(string $table_name, array $field_names): OperatorOptionsInsert;
 
     public function select(): OperatorOptionsSelect;

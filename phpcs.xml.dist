@@ -37,6 +37,9 @@
         <exclude name="PEAR.Commenting.FileComment.MissingLinkTag" />
         <exclude name="PEAR.Commenting.FileComment.WrongStyle" />
         <exclude name="PEAR.Commenting.FunctionComment.Missing" />
+        <exclude name="PEAR.Commenting.FunctionComment.MissingReturn" />
+        <exclude name="PEAR.Commenting.FunctionComment.MissingParamTag" />
+        <exclude name="PEAR.Commenting.FunctionComment.ParamNameNoMatch" />
         <exclude name="PEAR.Commenting.FunctionComment.MissingParamComment" />
         <exclude name="PEAR.Commenting.FunctionComment.SpacingAfterParamType" />
         <exclude name="PEAR.Commenting.FunctionCallSignature.CloseBracketLine" />

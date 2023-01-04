@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace vadimcontenthunter\MyDB\MySQL\MySQLQueryBuilder\TableMySQLQueryBuilder\Operators;
 
 use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\SQLQueryBuilder;
+use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Operators\Operators;
 use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Operators\OperatorOptionsCreate;
 
 /**
@@ -18,7 +19,7 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
     /**
      * @param array<string> $field_attribute
      */
-    public function addField(string $field_name, string $data_type, array $field_attribute): OperatorOptionsCreate
+    public function addField(string $field_name, string $data_type, array $field_attribute): OperatorOptionsCreate|Operators
     {
         return $this;
     }

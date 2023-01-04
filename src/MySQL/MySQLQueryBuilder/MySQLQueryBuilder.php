@@ -21,7 +21,7 @@ class MySQLQueryBuilder implements SQLQueryBuilder
         $this->query = $query;
         return $this;
     }
-    public function getQuery(string $query): string
+    public function getQuery(): string
     {
         return $this->query;
     }

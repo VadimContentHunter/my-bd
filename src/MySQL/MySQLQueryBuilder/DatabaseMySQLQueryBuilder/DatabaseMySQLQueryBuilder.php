@@ -35,7 +35,7 @@ class DatabaseMySQLQueryBuilder implements DatabaseSQLQueryBuilder
         return $this;
     }
 
-    public function getQuery(string $query): string
+    public function getQuery(): string
     {
         return $this->query;
     }

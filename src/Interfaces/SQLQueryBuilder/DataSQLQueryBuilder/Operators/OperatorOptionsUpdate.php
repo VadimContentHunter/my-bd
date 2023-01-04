@@ -12,5 +12,5 @@ use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\SQLQueryBuilder;
  */
 interface OperatorOptionsUpdate extends SQLQueryBuilder
 {
-    public function set(string $field_name, mixed $value): OperatorOptionsUpdate;
+    public function set(string $field_name, mixed $value): OperatorOptionsUpdate|Operators;
 }

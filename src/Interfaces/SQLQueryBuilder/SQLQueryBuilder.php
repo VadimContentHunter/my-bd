@@ -10,6 +10,6 @@ namespace vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder;
  */
 interface SQLQueryBuilder
 {
-    public function setQuery(string $query): string;
+    public function setQuery(string $query): SQLQueryBuilder;
     public function getQuery(string $query): string;
 }

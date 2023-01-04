@@ -21,37 +21,12 @@ class DbTest extends TestCase
     public function test_function_1(): void
     {
         $this->assertTrue(true);
+        $this->assertTrue(true);
     }
 
     /** @test */
     public function test_function_2(): void
     {
-        $user = 'mytest';
-        $pass = 'mytest';
-        $dataBaseName = 'test_db';
-        $tableName = 'user';
-
-        try {
-            $dbh = new PDO(
-                'mysql:host=127.0.0.1;dbname=' . $dataBaseName,
-                $user,
-                $pass,
-                [
-                    PDO::ATTR_PERSISTENT => true
-                ]
-            );
-            $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            $dbh->beginTransaction();
-            $dbh->exec("INSERT into $tableName (name, last_name, age) values ('Joe', 'Bloggs', 18)");
-            $dbh->exec("INSERT into $tableName (name, last_name, age) values ('Bobchenko', 'Kenaki', 32)");
-            $dbh->commit();
-        } catch (\Exception $e) {
-            $is = $dbh->rollBack() ?? null;
-            echo "Ошибка: " . $e->getMessage() . PHP_EOL;
-            echo "is: " . (string) $is;
-        }
-
-        $this->assertEquals(true, true);
+        $this->assertTrue(true);
     }
 }

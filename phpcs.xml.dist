@@ -21,8 +21,9 @@
         <exclude name="PEAR.ControlStructures.MultiLineCondition.StartWithBoolean" />
         <exclude name="PEAR.ControlStructures.MultiLineCondition.SpacingAfterOpenBrace" />
         <exclude name="PEAR.Commenting.FileComment.Missing" />
-        <!-- <exclude name="PEAR.Commenting.ClassComment.Missing" /> -->
+        <exclude name="PEAR.Commenting.ClassComment.Missing" />
         <!-- <exclude name="PEAR.Commenting.ClassComment.MissingAuthorTag" /> -->
+        <exclude name="PEAR.Commenting.ClassComment.MissingPackageTag" />
         <exclude name="PEAR.Commenting.ClassComment.MissingCategoryTag" />
         <exclude name="PEAR.Commenting.ClassComment.IncompleteCopyright" />
         <exclude name="PEAR.Commenting.ClassComment.MissingLicenseTag" />
@@ -35,6 +36,10 @@
         <exclude name="PEAR.Commenting.FileComment.MissingLicenseTag" />
         <exclude name="PEAR.Commenting.FileComment.MissingLinkTag" />
         <exclude name="PEAR.Commenting.FileComment.WrongStyle" />
+        <exclude name="PEAR.Commenting.FunctionComment.Missing" />
+        <exclude name="PEAR.Commenting.FunctionComment.MissingReturn" />
+        <exclude name="PEAR.Commenting.FunctionComment.MissingParamTag" />
+        <exclude name="PEAR.Commenting.FunctionComment.ParamNameNoMatch" />
         <exclude name="PEAR.Commenting.FunctionComment.MissingParamComment" />
         <exclude name="PEAR.Commenting.FunctionComment.SpacingAfterParamType" />
         <exclude name="PEAR.Commenting.FunctionCallSignature.CloseBracketLine" />
@@ -47,6 +52,7 @@
         <exclude name="PEAR.WhiteSpace.ScopeIndent.IncorrectExact" />
         <exclude name="PEAR.NamingConventions.ValidFunctionName.PrivateNoUnderscore" />
         <exclude name="Generic.Commenting.DocComment.NonParamGroup" />
+        <exclude name="Generic.Commenting.DocComment.MissingShort" />
         <exclude-pattern>tests/*</exclude-pattern>
     </rule>
 

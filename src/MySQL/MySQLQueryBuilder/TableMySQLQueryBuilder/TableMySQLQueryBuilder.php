@@ -7,7 +7,9 @@ namespace vadimcontenthunter\MyDB\MySQL\MySQLQueryBuilder\TableMySQLQueryBuilder
 use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\SQLQueryBuilder;
 use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Operators\Operators;
 use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\TableSQLQueryBuilder;
-use vadimcontenthunter\MyDB\MySQL\MySQLQueryBuilder\TableMySQLQueryBuilder\Operators\MySqlOperators\MySqlOperators;
+use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Operators\OperatorOptionsCreate;
+use vadimcontenthunter\MyDB\MySQL\MySQLQueryBuilder\TableMySQLQueryBuilder\Operators\MySqlOperatorOptionsCreate;
+use vadimcontenthunter\MyDB\MySQL\MySQLQueryBuilder\TableMySQLQueryBuilder\Operators\MySqlOperators;
 
 /**
  * @author    Vadim Volkovskyi <project.k.vadim@gmail.com>
@@ -17,9 +19,9 @@ class TableMySQLQueryBuilder implements TableSQLQueryBuilder
 {
     protected string $query = '';
 
-    public function create(string $table_name): Crea
+    public function create(string $table_name): OperatorOptionsCreate
     {
-        return new MySqlOperators();
+        return new MySqlOperatorOptionsCreate();
     }
 
     public function alter(string $field_name): Operators

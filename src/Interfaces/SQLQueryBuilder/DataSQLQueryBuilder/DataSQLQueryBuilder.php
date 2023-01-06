@@ -16,10 +16,7 @@ use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\DataSQLQueryBuilder\Opera
  */
 interface DataSQLQueryBuilder extends SQLQueryBuilder
 {
-    /**
-     * @param array<string> $field_names
-     */
-    public function insert(string $table_name, array $field_names): OperatorOptionsInsert;
+    public function insert(string $table_name): OperatorOptionsInsert;
 
     public function select(): OperatorOptionsSelect;
 

@@ -24,44 +24,36 @@ class DataMySQLQueryBuilder implements DataSQLQueryBuilder
 {
     protected string $query = '';
 
-    /**
-     * @param array<string> $field_names
-     */
-    public function insert(string $table_name, array $field_names): OperatorOptionsInsert
+    public function insert(string $table_name): OperatorOptionsInsert
     {
-        if (count($field_names) === 0) {
-            throw new QueryBuilderException("No columns to fill");
-        }
-
-        $this->query = 'INSERT ' . $table_name . '(';
-        foreach ($field_names as $key => $name) {
-            if (!is_string($name)) {
-                throw new QueryBuilderException("Column name is not a string");
-            }
-
-            $this->query .= $name . ',';
-        }
-        $this->query = substr($this->query, 0, -1) . ')';
-
-        return (new MySqlOperatorOptionsInsert())->setQuery($this->query);
+        $this->query = 'INSERT ' . $table_name;
+        $operator = new MySqlOperatorOptionsInsert();
+        $operator->setQuery($this->query);
+        return $operator;
     }
 
     public function select(): OperatorOptionsSelect
     {
         $this->query = 'SELECT';
-        return (new MySqlOperatorOptionsSelect())->setQuery($this->query);
+        $operator = new MySqlOperatorOptionsSelect();
+        $operator->setQuery($this->query);
+        return $operator;
     }
 
     public function update(string $table_name): OperatorOptionsUpdate
     {
         $this->query = 'UPDATE ' . $table_name;
-        return (new MySqlOperatorOptionsUpdate())->setQuery($this->query);
+        $operator = new MySqlOperatorOptionsUpdate();
+        $operator->setQuery($this->query);
+        return $operator;
     }
 
     public function delete(string $table_name): Operators
     {
         $this->query = 'DELETE FROM ' . $table_name;
-        return (new MySqlOperators())->setQuery($this->query);
+        $operator = new MySqlOperators();
+        $operator->setQuery($this->query);
+        return $operator;
     }
 
     public function setQuery(string $query): SQLQueryBuilder

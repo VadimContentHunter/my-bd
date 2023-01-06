@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace vadimcontenthunter\MyDB\Exception;
+namespace vadimcontenthunter\MyDB\Exceptions;
 
 /**
  * @author    Vadim Volkovskyi <project.k.vadim@gmail.com>

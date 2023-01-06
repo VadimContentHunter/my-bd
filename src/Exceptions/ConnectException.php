@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace vadimcontenthunter\MyDB\Exception;
+namespace vadimcontenthunter\MyDB\Exceptions;
 
-use vadimcontenthunter\MyDB\Exception\MyDbException;
+use vadimcontenthunter\MyDB\Exceptions\MyDbException;
 
 /**
  * @author    Vadim Volkovskyi <project.k.vadim@gmail.com>

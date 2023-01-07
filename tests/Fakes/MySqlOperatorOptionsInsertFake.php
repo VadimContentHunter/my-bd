@@ -10,7 +10,7 @@ use vadimcontenthunter\MyDB\MySQL\MySQLQueryBuilder\DataMySQLQueryBuilder\Operat
  * @author    Vadim Volkovskyi <project.k.vadim@gmail.com>
  * @copyright (c) Vadim Volkovskyi 2022
  */
-class MySqlOperatorOptionsInsertTest extends MySqlOperatorOptionsInsert
+class MySqlOperatorOptionsInsertFake extends MySqlOperatorOptionsInsert
 {
     /**
      * @return string[]

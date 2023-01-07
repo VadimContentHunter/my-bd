@@ -17,24 +17,30 @@ class MySqlOperatorOptionsInsert implements OperatorOptionsInsert
     protected string $query = '';
 
     /**
-     * @var array(string,string)
+     * @var array<array<string,string[]|string>
      */
     protected array $fieldNames = [];
 
     public function addValues(string $field_name, string $value): OperatorOptionsInsert
     {
-        $this->fieldNames += [$field_name => $value];
+        // $this->fieldNames[] = [$field_name => $value];
+
         return $this;
     }
 
     /**
-     * @var array(string,array(string)|string)
+     * @param array<string,string[]|string> $values
      */
     public function setValues(array $values): OperatorOptionsInsert
     {
         return $this;
     }
 
+    /**
+     * @param array<string,string[]|string> $field_names
+     *
+     * @return array<string[]>|string[]
+     */
     protected function matrixGeneration(array $field_names): array
     {
         $matrix = [];

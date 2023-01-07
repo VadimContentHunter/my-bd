@@ -37,9 +37,17 @@ class MySqlOperatorOptionsInsert implements OperatorOptionsInsert
 
     /**
      * @param array<string,string[]> $values
+     *
+     * @throws QueryBuilderException
      */
     public function setValues(array $values): OperatorOptionsInsert
     {
+        $this->fieldNames = $values;
+
+        if (!$this->isFieldNamesRectangularMatrix()) {
+            throw new QueryBuilderException("Incorrect value");
+        }
+
         return $this;
     }
 

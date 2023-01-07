@@ -25,12 +25,8 @@ class MySqlOperatorOptionsInsert implements OperatorOptionsInsert
     {
         foreach ($this->fieldNames as $name => &$field_value) {
             if (strcmp($name, $field_name) === 0) {
-                if (is_array($field_value)) {
-                    $field_value[] = $value;
-                    return $this;
-                }
-
-                throw new QueryBuilderException("Incorrect value");
+                $field_value[] = $value;
+                return $this;
             }
         }
 
@@ -58,6 +54,9 @@ class MySqlOperatorOptionsInsert implements OperatorOptionsInsert
         return $this->getFieldNamesSQL() . ' ' . $this->getValuesSQL();
     }
 
+    /**
+     * @throws QueryBuilderException
+     */
     protected function getValuesSQL(): string
     {
         if (!$this->isFieldNamesRectangularMatrix()) {
@@ -67,20 +66,19 @@ class MySqlOperatorOptionsInsert implements OperatorOptionsInsert
         $query = 'VALUES';
 
         foreach ($this->fieldNames as $row_num => $row) {
-            if (is_array($row)) {
-                $query .= ' (';
-                foreach ($row as $key => $value) {
-                    $query .= $value . ',';
-                }
-                $query = substr($query, 0, -1) . '),';  // удаляется лишняя запятая
-            } else {
-                throw new QueryBuilderException("Incorrect value");
+            $query .= ' (';
+            foreach ($row as $key => $value) {
+                $query .= $value . ',';
             }
+            $query = substr($query, 0, -1) . '),';  // удаляется лишняя запятая
         }
 
         return substr($query, 0, -1) . ';'; // удаляется лишняя запятая
     }
 
+    /**
+     * @throws QueryBuilderException
+     */
     protected function getFieldNamesSQL(): string
     {
         $query = '(';
@@ -115,7 +113,7 @@ class MySqlOperatorOptionsInsert implements OperatorOptionsInsert
                 continue;
             }
 
-            if ($matrix_column > 0 && $matrix_column === count($value)) {
+            if ($matrix_column === count($value)) {
                 $matrix_column = count($value);
                 continue;
             }

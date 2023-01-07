@@ -17,60 +17,56 @@ class MySqlOperatorOptionsInsert implements OperatorOptionsInsert
     protected string $query = '';
 
     /**
-     * @var array<array<string,string[]|string>
+     * @var array<string,string[]>
      */
     protected array $fieldNames = [];
 
     public function addValues(string $field_name, string $value): OperatorOptionsInsert
     {
-        // $this->fieldNames[] = [$field_name => $value];
+        foreach ($this->fieldNames as $name => &$field_value) {
+            if (strcmp($name, $field_name) === 0) {
+                if (is_array($field_value)) {
+                    $field_value[] = $value;
+                    return $this;
+                }
+
+                throw new QueryBuilderException("Incorrect value");
+            }
+        }
+
+        $this->fieldNames += [$field_name => [$value]];
 
         return $this;
     }
 
     /**
-     * @param array<string,string[]|string> $values
+     * @param array<string,string[]> $values
      */
     public function setValues(array $values): OperatorOptionsInsert
     {
         return $this;
     }
 
-    /**
-     * @param array<string,string[]|string> $field_names
-     *
-     * @return array<string[]>|string[]
-     */
-    protected function matrixGeneration(array $field_names): array
+    public function setQuery(string $query): SQLQueryBuilder
     {
-        $matrix = [];
-        $matrix_column = 0;
+        $this->query = $query;
+        return $this;
+    }
 
-        foreach ($field_names as $field_name => $value) {
-            if (is_string($value)) {
-                $matrix_column = 1;
-                $matrix[] = $value;
-            } elseif (
-                is_array($value)
-                && count($value) > 0
-                && ($matrix_column > 0 && $matrix_column === count($value))
-            ) {
-                $matrix_column = count($value);
-                $matrix += $value;
-            } else {
-                throw new QueryBuilderException("Incorrect value");
-            }
-        }
-
-        return $matrix;
+    public function getQuery(): string
+    {
+        return $this->getFieldNamesSQL() . ' ' . $this->getValuesSQL();
     }
 
     protected function getValuesSQL(): string
     {
-        $matrix = $this->matrixGeneration($this->fieldNames);
-        $query = ' VALUES';
+        if (!$this->isFieldNamesRectangularMatrix()) {
+            throw new QueryBuilderException("Incorrect value");
+        }
 
-        foreach ($matrix as $row_num => $row) {
+        $query = 'VALUES';
+
+        foreach ($this->fieldNames as $row_num => $row) {
             if (is_array($row)) {
                 $query .= ' (';
                 foreach ($row as $key => $value) {
@@ -82,7 +78,7 @@ class MySqlOperatorOptionsInsert implements OperatorOptionsInsert
             }
         }
 
-        return substr($query, 0, -1); // удаляется лишняя запятая
+        return substr($query, 0, -1) . ';'; // удаляется лишняя запятая
     }
 
     protected function getFieldNamesSQL(): string
@@ -98,14 +94,35 @@ class MySqlOperatorOptionsInsert implements OperatorOptionsInsert
         return substr($query, 0, -1) . ')';
     }
 
-    public function setQuery(string $query): SQLQueryBuilder
+    /**
+     * @return bool Возвращает true в случае если элементы $this->fieldNames обладают структурой array<string,string[]>,
+     *              иначе false. В случае если нет элементов в массиве $this->fieldNames - false.
+     */
+    public function isFieldNamesRectangularMatrix(): bool
     {
-        $this->query = $query;
-        return $this;
-    }
+        if (!is_array($this->fieldNames) || count($this->fieldNames) === 0) {
+            return false;
+        }
 
-    public function getQuery(): string
-    {
-        return $this->getFieldNamesSQL() . ' ' . $this->getValuesSQL();
+        $matrix_column = 0;
+        foreach ($this->fieldNames as $field_name => $value) {
+            if (!is_array($value) || count($value) === 0) {
+                return false;
+            }
+
+            if ($matrix_column === 0) {
+                $matrix_column = count($value);
+                continue;
+            }
+
+            if ($matrix_column > 0 && $matrix_column === count($value)) {
+                $matrix_column = count($value);
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
     }
 }

@@ -61,7 +61,72 @@ class MySqlOperatorOptionsInsertTest extends TestCase
 
     /**
      * @test
+     * @dataProvider providerAddValues
+     *
+     * @param array<string,string[]> $data
+     */
+    public function test_setValues_withParameters_shouldAddValuesToParameter(array $data, mixed $expected): void
+    {
+        $this->mySqlOperatorOptionsInsertFake->setValues($data);
+
+        $this->assertEquals($expected, $this->mySqlOperatorOptionsInsertFake->getFieldNamesFake());
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function providerSetValues(): array
+    {
+        return [
+            'test 1' => [
+                [
+                    'name' => ['Vadim', 'Sasha', 'Oleg'],
+                    'last_name' => ['Volkovskyi', 'Karasev', 'Trunevs'],
+                    'age' => ['24', '25', '32'],
+                ],
+                [
+                    'name' => ['Vadim', 'Sasha', 'Oleg'],
+                    'last_name' => ['Volkovskyi', 'Karasev', 'Trunevs'],
+                    'age' => ['24', '25', '32'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider providerSetValuesException
+     *
+     * @param array<mixed> $data
+     */
+    public function test_setValues_withParameters_shouldReturnAnException(array $data, \Exception $expected): void
+    {
+        $this->expectException($expected::class);
+
+        $this->mySqlOperatorOptionsInsertFake->setValues($data);
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function providerSetValuesException(): array
+    {
+        return [
+            'test 1' => [
+                [
+                    'name' => ['Vadim', 'Sasha', 'Oleg', 'Oleg'],
+                    'last_name' => ['Volkovskyi', 'Karasev', 'Trunevs'],
+                    'age' => ['24', '25', '32'],
+                ],
+                new QueryBuilderException(),
+            ],
+        ];
+    }
+
+    /**
+     * @test
      * @dataProvider providerGetQuery
+     * @depends test_addValues_withParameters_shouldAddValuesToParameter
      *
      * @param array<string,string[]> $data
      */
@@ -96,12 +161,13 @@ class MySqlOperatorOptionsInsertTest extends TestCase
     /**
      * @test
      * @dataProvider providerGetQueryException
+     * @depends test_addValues_withParameters_shouldAddValuesToParameter
      *
      * @param array<string,string[]> $data
      */
-    public function test_getQuery_usingTheAddValuesMethod_shouldReturnAnException(array $data, mixed $objException): void
+    public function test_getQuery_usingTheAddValuesMethod_shouldReturnAnException(array $data, \Exception $objException): void
     {
-        $this->expectException(QueryBuilderException::class);
+        $this->expectException($objException::class);
 
         foreach ($data as $field => $values) {
             foreach ($values as $key => $value) {

@@ -18,7 +18,7 @@ class MySqlOperatorOptionsUpdate implements OperatorOptionsUpdate
     protected string $query = '';
 
     /**
-     * @var array(string,string)
+     * @var array<array<string,string|int>>
      */
     protected array $fieldsValues = [];
 

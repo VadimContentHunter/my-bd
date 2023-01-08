@@ -24,7 +24,7 @@ class MySqlOperatorOptionsUpdateTest extends TestCase
      * @test
      * @dataProvider providerSet
      *
-     * @param array<string[]> $data
+     * @param array<mixed> $data
      */
     public function test_set_withParameters_shouldAddValuesToParameter(
         array $data,
@@ -50,10 +50,12 @@ class MySqlOperatorOptionsUpdateTest extends TestCase
         return [
             'test 1' => [
                 [
+                    [ 'ProductId', 3, false ],
                     [ 'Manufacturer', 'Samsung Inc.' ],
                     [ 'ProductCount', 'ProductCount + 3', false ],
                 ],
                 [
+                    [ 'ProductId' => 3 ],
                     [ 'Manufacturer' => "'Samsung Inc.'" ],
                     [ 'ProductCount' => 'ProductCount + 3' ],
                 ],
@@ -66,7 +68,7 @@ class MySqlOperatorOptionsUpdateTest extends TestCase
      * @dataProvider providerGetFieldsValuesSQL
      * @depends test_set_withParameters_shouldAddValuesToParameter
      *
-     * @param array<string[]> $data
+     * @param array<mixed> $data
      */
     public function test_getFieldsValuesSQL_usingTheSetMethod_shouldReturnString(
         array $data,
@@ -92,10 +94,11 @@ class MySqlOperatorOptionsUpdateTest extends TestCase
         return [
             'test 1' => [
                 [
+                    [ 'ProductId', 3, false ],
                     [ 'Manufacturer', 'Samsung Inc.' ],
                     [ 'ProductCount', 'ProductCount + 3', false ],
                 ],
-                " SET Manufacturer='Samsung Inc.',ProductCount=ProductCount + 3"
+                " SET ProductId=3,Manufacturer='Samsung Inc.',ProductCount=ProductCount + 3"
             ]
         ];
     }

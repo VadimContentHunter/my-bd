@@ -13,7 +13,7 @@ use vadimcontenthunter\MyDB\MySQL\MySQLQueryBuilder\DataMySQLQueryBuilder\Operat
 class MySqlOperatorOptionsSelectFake extends MySqlOperatorOptionsSelect
 {
     /**
-     * @return array<string,string[]>
+     * @return string[]
      */
     public function getFieldNamesFake(): array
     {

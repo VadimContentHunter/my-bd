@@ -18,6 +18,9 @@ class MySqlOperatorOptionsSelect implements OperatorOptionsSelect
 {
     protected string $query = '';
 
+    /**
+     * @var string[]
+     */
     protected array $fieldNames = [];
 
     protected string $queryDistinct = '';
@@ -56,9 +59,9 @@ class MySqlOperatorOptionsSelect implements OperatorOptionsSelect
         }
 
         if ($aggregate_function !== null && $aggregate_function !== '') {
-            $this->fieldNames[] = $aggregate_function . '(' . $field_name . ')' . $as_name ?? '';
+            $this->fieldNames[] = $aggregate_function . '(' . $field_name . ')' . ($as_name ?? '');
         } else {
-            $this->fieldNames[] = $field_name . $as_name ?? '';
+            $this->fieldNames[] = $field_name . ($as_name ?? '');
         }
 
         return $this;
@@ -66,7 +69,7 @@ class MySqlOperatorOptionsSelect implements OperatorOptionsSelect
 
     public function distinct(): OperatorOptionsSelect
     {
-        $this->query = preg_replace('~SELECT~ui', 'SELECT DISTINCT', $this->query);
+        $this->query = preg_replace('~SELECT~ui', 'SELECT DISTINCT', $this->query) ?? '';
         return $this;
     }
 

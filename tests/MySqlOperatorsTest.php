@@ -84,4 +84,24 @@ class MySqlOperatorsTest extends TestCase
             ],
         ];
     }
+
+    /**
+     * @test
+     * @depends test_setQuery_withParameters_shouldSaveTheQueryAndTheCommand
+     */
+    public function test_in_withParameterNot_shouldChangeInternalParameterQuery(): void
+    {
+        $expected = "SELECT * FROM Products WHERE Manufacturer NOT IN ('Samsung','HTC','Huawei')";
+        $query = 'SELECT * FROM Products WHERE Manufacturer';
+        $this->mySqlOperatorsFake->setQuery($query);
+        $this->mySqlOperatorsFake->in(
+            [
+                "'Samsung'",
+                "'HTC'"
+            ],
+            true
+        );
+        $this->mySqlOperatorsFake->in("'Huawei'");
+        $this->assertEquals($expected, $this->mySqlOperatorsFake->getQueryFake());
+    }
 }

@@ -136,7 +136,7 @@ class MySqlOperators implements Operators
         if ($this->isOperatorWhere()) {
             if (preg_match("~^.+\s(?<command>IN)\s\((?<values>[\s\w',]+)\).*$~iu", $this->query, $matches)) {
                 $inValue = $matches['values'] . ",$value";
-                $this->query = preg_replace('~' . $matches['values'] . '~u', $inValue, $this->query);
+                $this->query = (string) preg_replace('~' . $matches['values'] . '~u', $inValue, $this->query);
             } else {
                 $this->query .= ($not ? ' NOT' : '') . ' IN (' . $value . ')';
             }

@@ -12,20 +12,18 @@ use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\SQLQueryBuilder;
  */
 interface Operators extends SQLQueryBuilder
 {
-    public function where(string $value_a, string $operator = '', string $value_b = ''): Operators;
+    public function where(string $value_a, string $operator = '', string $value_b = '', bool $not = false): Operators;
 
-    public function and(): Operators;
+    public function and(string $value_a, string $operator = '', string $value_b = '', bool $not = false): Operators;
 
-    public function or(): Operators;
-
-    public function not(): Operators;
+    public function or(string $value_a, string $operator = '', string $value_b = '', bool $not = false): Operators;
 
     /**
      * @param string[]|string $value
      */
     public function in(array|string $value, bool $not = false): Operators;
 
-    public function between(mixed $value_a, mixed $value_b, bool $not = false): Operators;
+    public function between(string $value_a, string $value_b, bool $not = false): Operators;
 
     public function like(string $template, bool $not = false): Operators;
     public function regex(string $template, bool $not = false): Operators;

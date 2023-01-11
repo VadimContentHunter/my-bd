@@ -30,7 +30,7 @@ class MySqlOperatorOptionsUpdate implements OperatorOptionsUpdate
 
     public function getQuery(): string
     {
-        return ($this->query[-1] ?? '') !== ';' ? $this->query . ';' : $this->query;
+        return $this->query;
     }
 
     public function set(string $field_name, string|int $value, bool $wrapInQuotes = true): OperatorOptionsUpdate

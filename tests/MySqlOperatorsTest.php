@@ -130,4 +130,96 @@ class MySqlOperatorsTest extends TestCase
         $this->mySqlOperatorsFake->regex('iPhone [78]', true);
         $this->assertEquals($expected, $this->mySqlOperatorsFake->getQueryFake());
     }
+
+    /**
+     * @test
+     * @dataProvider providerOrderByDesc
+     * @depends test_setQuery_withParameters_shouldSaveTheQueryAndTheCommand
+     *
+     * @param string[] $fields
+     */
+    public function test_orderByDesc_withParameterFieldName_shouldChangeInternalParameterQuery(
+        string $query,
+        array $fields,
+        string $expected
+    ): void {
+        $this->mySqlOperatorsFake->setQuery($query);
+
+        foreach ($fields as $key => $field_name) {
+            $this->mySqlOperatorsFake->orderByDesc($field_name);
+        }
+
+        $this->assertEquals($expected, $this->mySqlOperatorsFake->getQueryFake());
+    }
+
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function providerOrderByDesc(): array
+    {
+        return [
+            'add first field to sort' => [
+                'SELECT ProductName, Price, Manufacturer FROM Products',
+                [
+                    'ProductName',
+                ],
+                'SELECT ProductName, Price, Manufacturer FROM Products ORDER BY ProductName DESC'
+            ],
+            'add fields to existing ones in sorting' => [
+                'SELECT ProductName, Price, Manufacturer FROM Products ORDER BY Manufacturer ASC',
+                [
+                    'ProductName',
+                    'ClientName'
+                ],
+                'SELECT ProductName, Price, Manufacturer FROM Products ORDER BY Manufacturer ASC, ProductName DESC, ClientName DESC'
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider providerOrderByAsc
+     * @depends test_setQuery_withParameters_shouldSaveTheQueryAndTheCommand
+     *
+     * @param string[] $fields
+     */
+    public function test_orderByAsc_withParameterFieldName_shouldChangeInternalParameterQuery(
+        string $query,
+        array $fields,
+        string $expected
+    ): void {
+        $this->mySqlOperatorsFake->setQuery($query);
+
+        foreach ($fields as $key => $field_name) {
+            $this->mySqlOperatorsFake->orderByAsc($field_name);
+        }
+
+        $this->assertEquals($expected, $this->mySqlOperatorsFake->getQueryFake());
+    }
+
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function providerOrderByAsc(): array
+    {
+        return [
+            'add first field to sort' => [
+                'SELECT ProductName, Price, Manufacturer FROM Products',
+                [
+                    'ProductName',
+                ],
+                'SELECT ProductName, Price, Manufacturer FROM Products ORDER BY ProductName ASC'
+            ],
+            'add fields to existing ones in sorting' => [
+                'SELECT ProductName, Price, Manufacturer FROM Products ORDER BY Manufacturer DESC',
+                [
+                    'ProductName',
+                    'ClientName'
+                ],
+                'SELECT ProductName, Price, Manufacturer FROM Products ORDER BY Manufacturer DESC, ProductName ASC, ClientName ASC'
+            ],
+        ];
+    }
 }

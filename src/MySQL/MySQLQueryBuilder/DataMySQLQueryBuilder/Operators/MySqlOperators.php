@@ -108,6 +108,10 @@ class MySqlOperators implements Operators
 
     public function where(string $value_a, string $operator = "", string $value_b = "", bool $not = false): Operators
     {
+        if ($this->isCommand('SELECT')) {
+            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
+        }
+
         if ($this->isOperator($operator)) {
             throw new QueryBuilderException('Error, invalid operator.');
         }
@@ -119,6 +123,10 @@ class MySqlOperators implements Operators
 
     public function and(string $value_a, string $operator = "", string $value_b = "", bool $not = false): Operators
     {
+        if ($this->isCommand('SELECT')) {
+            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
+        }
+
         if ($this->isOperator($operator)) {
             throw new QueryBuilderException('Error, invalid operator.');
         }
@@ -134,6 +142,10 @@ class MySqlOperators implements Operators
 
     public function or(string $value_a, string $operator = "", string $value_b = "", bool $not = false): Operators
     {
+        if ($this->isCommand('SELECT')) {
+            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
+        }
+
         if ($this->isOperator($operator)) {
             throw new QueryBuilderException('Error, invalid operator.');
         }
@@ -153,6 +165,10 @@ class MySqlOperators implements Operators
      */
     public function in(array|string $value, bool $not = false): Operators
     {
+        if ($this->isCommand('SELECT')) {
+            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
+        }
+
         if (is_array($value)) {
             $value = implode(",", $value);
         }
@@ -177,6 +193,10 @@ class MySqlOperators implements Operators
 
     public function between(string $value_a, string $value_b, bool $not = false): Operators
     {
+        if ($this->isCommand('SELECT')) {
+            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
+        }
+
         if ($this->isOperatorWhere()) {
             $this->query .= ($not ? ' NOT' : '') . ' BETWEEN ' . $value_a . ' AND ' . $value_b;
         } else {
@@ -187,6 +207,10 @@ class MySqlOperators implements Operators
 
     public function like(string $template, bool $not = false): Operators
     {
+        if ($this->isCommand('SELECT')) {
+            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
+        }
+
         if ($this->isOperatorWhere()) {
             $this->query .= ($not ? ' NOT' : '') . " LIKE '" . $template . "'";
         } else {
@@ -201,6 +225,10 @@ class MySqlOperators implements Operators
 
     public function regex(string $template, bool $not = false): Operators
     {
+        if ($this->isCommand('SELECT')) {
+            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
+        }
+
         if ($this->isOperatorWhere()) {
             $this->query .= ($not ? ' NOT' : '') . " REGEXP '" . $template . "'";
         } else {
@@ -215,6 +243,10 @@ class MySqlOperators implements Operators
 
     public function orderByDesc(string $field_name): Operators
     {
+        if ($this->isCommand('SELECT')) {
+            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
+        }
+
         if (preg_match("~^.+\sORDER\sBY\s(?<values>(\w+\s(ASC|DESC),?\s?)+);?$~iu", $this->query, $matches)) {
             $values = $matches['values'] . ', ' . $field_name . ' DESC';
             $this->query = (string) preg_replace('~' . $matches['values'] . '~u', $values, $this->query);
@@ -231,6 +263,10 @@ class MySqlOperators implements Operators
 
     public function orderByAsc(string $field_name): Operators
     {
+        if ($this->isCommand('SELECT')) {
+            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
+        }
+
         if (preg_match("~^.+\sORDER\sBY\s(?<values>(\w+\s(ASC|DESC),?\s?)+);?$~iu", $this->query, $matches)) {
             $values = $matches['values'] . ', ' . $field_name . ' ASC';
             $this->query = (string) preg_replace('~' . $matches['values'] . '~u', $values, $this->query);
@@ -247,31 +283,55 @@ class MySqlOperators implements Operators
 
     public function limit(int $row_count, int $offset = 0): Operators
     {
+        if ($this->isCommand('SELECT')) {
+            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
+        }
+
         return $this;
     }
 
     public function innerJoin(string $table_name): Operators
     {
+        if ($this->isCommand('SELECT')) {
+            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
+        }
+
         return $this;
     }
 
     public function rightJoin(string $table_name): Operators
     {
+        if ($this->isCommand('SELECT')) {
+            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
+        }
+
         return $this;
     }
 
     public function leftJoin(string $table_name): Operators
     {
+        if ($this->isCommand('SELECT')) {
+            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
+        }
+
         return $this;
     }
 
     public function on(string $value_a, string $operator, string $value_b): Operators
     {
+        if ($this->isCommand('SELECT')) {
+            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
+        }
+
         return $this;
     }
 
     public function isNull(bool $not = false): Operators
     {
+        if ($this->isCommand('SELECT')) {
+            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
+        }
+
         if ($this->isOperatorWhere()) {
             $this->query .= ' IS' . ($not ? ' NOT' : '') . " NULL";
         } else {

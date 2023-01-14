@@ -104,4 +104,30 @@ class MySqlOperatorsTest extends TestCase
         $this->mySqlOperatorsFake->in("'Huawei'");
         $this->assertEquals($expected, $this->mySqlOperatorsFake->getQueryFake());
     }
+
+    /**
+     * @test
+     * @depends test_setQuery_withParameters_shouldSaveTheQueryAndTheCommand
+     */
+    public function test_like_withParameterNot_shouldChangeInternalParameterQuery(): void
+    {
+        $expected = "SELECT * FROM Products WHERE ProductName NOT LIKE '_Phone%'";
+        $query = 'SELECT * FROM Products WHERE ProductName';
+        $this->mySqlOperatorsFake->setQuery($query);
+        $this->mySqlOperatorsFake->like('_Phone%', true);
+        $this->assertEquals($expected, $this->mySqlOperatorsFake->getQueryFake());
+    }
+
+    /**
+     * @test
+     * @depends test_setQuery_withParameters_shouldSaveTheQueryAndTheCommand
+     */
+    public function test_regex_withParameterNot_shouldChangeInternalParameterQuery(): void
+    {
+        $expected = "SELECT * FROM Products WHERE ProductName NOT REGEXP 'iPhone [78]'";
+        $query = 'SELECT * FROM Products WHERE ProductName';
+        $this->mySqlOperatorsFake->setQuery($query);
+        $this->mySqlOperatorsFake->regex('iPhone [78]', true);
+        $this->assertEquals($expected, $this->mySqlOperatorsFake->getQueryFake());
+    }
 }

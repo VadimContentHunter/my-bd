@@ -222,4 +222,17 @@ class MySqlOperatorsTest extends TestCase
             ],
         ];
     }
+
+     /**
+     * @test
+     * @depends test_setQuery_withParameters_shouldSaveTheQueryAndTheCommand
+     */
+    public function test_limit_withParametersRowCountAndOffSet_shouldChangeInternalParameterQuery(): void
+    {
+        $expected = 'SELECT * FROM Products LIMIT 2, 3';
+        $query = 'SELECT * FROM Products';
+        $this->mySqlOperatorsFake->setQuery($query);
+        $this->mySqlOperatorsFake->limit(3, 2);
+        $this->assertEquals($expected, $this->mySqlOperatorsFake->getQueryFake());
+    }
 }

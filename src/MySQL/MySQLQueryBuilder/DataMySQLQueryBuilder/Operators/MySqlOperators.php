@@ -82,6 +82,30 @@ class MySqlOperators implements Operators
         return false;
     }
 
+    public function isOperatorLike(): bool
+    {
+        if (preg_match("~^.+\sWHERE\s\w+(\sNOT)?\sLIKE\s'[\w%]+';?$~iu", $this->query)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function isOperatorRegex(): bool
+    {
+        if (preg_match("~^.+\sWHERE\s\w+(\sNOT)?\sREGEXP\s'.*';?$~iu", $this->query)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function isOperatorOrderBy(): bool
+    {
+        if (preg_match("~^.+\sORDER\sBY\s(?<values>(\w+\s(ASC|DESC),?\s?)+);?$~iu", $this->query)) {
+            return true;
+        }
+        return false;
+    }
+
     public function where(string $value_a, string $operator = "", string $value_b = "", bool $not = false): Operators
     {
         if ($this->isOperator($operator)) {
@@ -155,22 +179,69 @@ class MySqlOperators implements Operators
     {
         if ($this->isOperatorWhere()) {
             $this->query .= ($not ? ' NOT' : '') . ' BETWEEN ' . $value_a . ' AND ' . $value_b;
+        } else {
+            throw new QueryBuilderException('Error, WHERE clause not found. You cannot use AND without WHERE.');
         }
         return $this;
     }
 
     public function like(string $template, bool $not = false): Operators
     {
+        if ($this->isOperatorWhere()) {
+            $this->query .= ($not ? ' NOT' : '') . " LIKE '" . $template . "'";
+        } else {
+            throw new QueryBuilderException('Error, WHERE clause not found. You cannot use AND without WHERE.');
+        }
+
+        if (!$this->isOperatorLike()) {
+            throw new QueryBuilderException('Error, incorrect LIKE operator.');
+        }
         return $this;
     }
 
     public function regex(string $template, bool $not = false): Operators
     {
+        if ($this->isOperatorWhere()) {
+            $this->query .= ($not ? ' NOT' : '') . " REGEXP '" . $template . "'";
+        } else {
+            throw new QueryBuilderException('Error, WHERE clause not found. You cannot use AND without WHERE.');
+        }
+
+        if (!$this->isOperatorRegex()) {
+            throw new QueryBuilderException('Error, incorrect LIKE operator.');
+        }
         return $this;
     }
 
     public function orderByDesc(string $field_name): Operators
     {
+        if (preg_match("~^.+\sORDER\sBY\s(?<values>(\w+\s(ASC|DESC),?\s?)+);?$~iu", $this->query, $matches)) {
+            $values = $matches['values'] . ', ' . $field_name . ' DESC';
+            $this->query = (string) preg_replace('~' . $matches['values'] . '~u', $values, $this->query);
+        } else {
+            $this->query .= ' ORDER BY ' . $field_name . ' DESC';
+        }
+
+        if (!$this->isOperatorOrderBy()) {
+            throw new QueryBuilderException('Error, incorrect ORDER BY operator.');
+        }
+
+        return $this;
+    }
+
+    public function orderByAsc(string $field_name): Operators
+    {
+        if (preg_match("~^.+\sORDER\sBY\s(?<values>(\w+\s(ASC|DESC),?\s?)+);?$~iu", $this->query, $matches)) {
+            $values = $matches['values'] . ', ' . $field_name . ' ASC';
+            $this->query = (string) preg_replace('~' . $matches['values'] . '~u', $values, $this->query);
+        } else {
+            $this->query .= ' ORDER BY ' . $field_name . ' ASC';
+        }
+
+        if (!$this->isOperatorOrderBy()) {
+            throw new QueryBuilderException('Error, incorrect ORDER BY operator.');
+        }
+
         return $this;
     }
 
@@ -199,13 +270,13 @@ class MySqlOperators implements Operators
         return $this;
     }
 
-    public function orderByAsc(string $field_name): Operators
-    {
-        return $this;
-    }
-
     public function isNull(bool $not = false): Operators
     {
+        if ($this->isOperatorWhere()) {
+            $this->query .= ' IS' . ($not ? ' NOT' : '') . " NULL";
+        } else {
+            throw new QueryBuilderException('Error, WHERE clause not found. You cannot use AND without WHERE.');
+        }
         return $this;
     }
 }

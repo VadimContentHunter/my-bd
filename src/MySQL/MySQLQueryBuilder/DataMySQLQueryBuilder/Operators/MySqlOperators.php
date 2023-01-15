@@ -106,6 +106,34 @@ class MySqlOperators implements Operators
         return false;
     }
 
+    public function getValuesToJoinTables(): string
+    {
+        if (
+            preg_match(
+                "~^SELECT\s(?<values>[\w,\s.]+)\sFROM\s(?<table_name>\w+)\s.+$~u",
+                $this->query,
+                $matches
+            )
+        ) {
+            $values = preg_split('~,+\s*~u', $matches['values']) ?: throw new QueryBuilderException('Error, incorrect value table name.');
+            $values = array_map(
+                function ($value) use ($matches) {
+                    if (preg_match('~\.~iu', $value)) {
+                        return $value;
+                    }
+
+                    return $matches['table_name'] . '.' . $value;
+                },
+                $values,
+            );
+
+            return preg_replace('~' . $matches['values'] . '~u', implode(",", $values), $this->query)
+                    ?? throw new QueryBuilderException('Error, incorrect value table name.');
+        }
+
+        throw new QueryBuilderException('Error, incorrect query.');
+    }
+
     public function where(string $value_a, string $operator = "", string $value_b = "", bool $not = false): Operators
     {
         if (!$this->isCommand('SELECT')) {
@@ -312,49 +340,41 @@ class MySqlOperators implements Operators
 
         $this->command = 'JOIN';
         $this->query .= ' JOIN ' . $table_name;
-
-        if (
-            preg_match(
-                "~^SELECT\s(?<values>[\w,\s.]+)\sFROM\s(?<table_name>\w+)\s.+$~u",
-                $this->query,
-                $matches
-            )
-        ) {
-            $values = preg_split('~,+\s*~u', $matches['values']) ?: throw new QueryBuilderException('Error, incorrect value table name.');
-            $values = array_map(
-                function ($value) use ($matches) {
-                    if (preg_match('~\.~iu', $value)) {
-                        return $value;
-                    }
-
-                    return $matches['table_name'] . '.' . $value;
-                },
-                $values,
-            );
-
-            $this->query = preg_replace('~' . $matches['values'] . '~u', implode(",", $values), $this->query)
-                            ?? throw new QueryBuilderException('Error, incorrect value table name.');
-        } else {
-            throw new QueryBuilderException('Error, incorrect query.');
-        }
+        $this->query = $this->getValuesToJoinTables();
 
         return $this;
     }
 
     public function rightJoin(string $table_name): Operators
     {
-        if (!$this->isCommand('SELECT')) {
-            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
+        if ($this->isCommand('JOIN')) {
+            throw new QueryBuilderException('Error, JOIN operator already exists, ON operator is expected to be called.');
         }
+
+        if (!$this->isCommand('SELECT')) {
+            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command.');
+        }
+
+        $this->command = 'JOIN';
+        $this->query .= ' RIGHT JOIN ' . $table_name;
+        $this->query = $this->getValuesToJoinTables();
 
         return $this;
     }
 
     public function leftJoin(string $table_name): Operators
     {
-        if (!$this->isCommand('SELECT')) {
-            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
+        if ($this->isCommand('JOIN')) {
+            throw new QueryBuilderException('Error, JOIN operator already exists, ON operator is expected to be called.');
         }
+
+        if (!$this->isCommand('SELECT')) {
+            throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command.');
+        }
+
+        $this->command = 'JOIN';
+        $this->query .= ' LEFT JOIN ' . $table_name;
+        $this->query = $this->getValuesToJoinTables();
 
         return $this;
     }

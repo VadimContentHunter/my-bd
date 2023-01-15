@@ -235,4 +235,22 @@ class MySqlOperatorsTest extends TestCase
         $this->mySqlOperatorsFake->limit(3, 2);
         $this->assertEquals($expected, $this->mySqlOperatorsFake->getQueryFake());
     }
+
+    /**
+     * @test
+     * @depends test_setQuery_withParameters_shouldSaveTheQueryAndTheCommand
+     */
+    public function test_onAndInnerJoin_withParameters_shouldChangeInternalParameterQuery(): void
+    {
+        $expected = "SELECT Orders.CreatedAt,Customers.FirstName,Products.ProductName FROM Orders JOIN Products ON Products.Id = Orders.ProductId JOIN Customers ON Customers.Id = Orders.CustomerId";
+        $query = 'SELECT CreatedAt, Customers.FirstName, Products.ProductName FROM Orders';
+
+        $this->mySqlOperatorsFake->setQuery($query)
+            ->innerJoin('Products')
+            ->on('Products.Id', '=', 'Orders.ProductId')
+            ->innerJoin('Customers')
+            ->on('Customers.Id', '=', 'Orders.CustomerId');
+
+        $this->assertEquals($expected, $this->mySqlOperatorsFake->getQueryFake());
+    }
 }

@@ -245,8 +245,8 @@ class MySqlOperatorsTest extends TestCase
         $expected = "SELECT Orders.CreatedAt,Customers.FirstName,Products.ProductName FROM Orders JOIN Products ON Products.Id = Orders.ProductId JOIN Customers ON Customers.Id = Orders.CustomerId";
         $query = 'SELECT CreatedAt, Customers.FirstName, Products.ProductName FROM Orders';
 
-        $this->mySqlOperatorsFake->setQuery($query)
-            ->innerJoin('Products')
+        $this->mySqlOperatorsFake->setQuery($query);
+        $this->mySqlOperatorsFake->innerJoin('Products')
             ->on('Products.Id', '=', 'Orders.ProductId')
             ->innerJoin('Customers')
             ->on('Customers.Id', '=', 'Orders.CustomerId');
@@ -263,8 +263,8 @@ class MySqlOperatorsTest extends TestCase
         $expected = "SELECT Orders.CreatedAt,Customers.FirstName,Products.ProductName FROM Orders LEFT JOIN Products ON Products.Id = Orders.ProductId LEFT JOIN Customers ON Customers.Id = Orders.CustomerId";
         $query = 'SELECT CreatedAt, Customers.FirstName, Products.ProductName FROM Orders';
 
-        $this->mySqlOperatorsFake->setQuery($query)
-            ->leftJoin('Products')
+        $this->mySqlOperatorsFake->setQuery($query);
+        $this->mySqlOperatorsFake->leftJoin('Products')
             ->on('Products.Id', '=', 'Orders.ProductId')
             ->leftJoin('Customers')
             ->on('Customers.Id', '=', 'Orders.CustomerId');
@@ -281,8 +281,8 @@ class MySqlOperatorsTest extends TestCase
         $expected = "SELECT Orders.CreatedAt,Customers.FirstName,Products.ProductName FROM Orders RIGHT JOIN Products ON Products.Id = Orders.ProductId RIGHT JOIN Customers ON Customers.Id = Orders.CustomerId";
         $query = 'SELECT CreatedAt, Customers.FirstName, Products.ProductName FROM Orders';
 
-        $this->mySqlOperatorsFake->setQuery($query)
-            ->rightJoin('Products')
+        $this->mySqlOperatorsFake->setQuery($query);
+        $this->mySqlOperatorsFake->rightJoin('Products')
             ->on('Products.Id', '=', 'Orders.ProductId')
             ->rightJoin('Customers')
             ->on('Customers.Id', '=', 'Orders.CustomerId');

@@ -17,4 +17,16 @@ interface OperatorOptionsCreate extends SQLQueryBuilder
      * @param string[] $field_attribute
      */
     public function addField(string $field_name, string $data_type, array $field_attribute = []): OperatorOptionsCreate;
+
+    public function consrtaintCheck(string $consrtaint_name, string $field_name, string $condition, string $value): OperatorOptionsCreate;
+
+    public function consrtaintUnique(string $consrtaint_name, string $field_name, string $condition, string $value): OperatorOptionsCreate;
+
+    /**
+     * @param string[] $fields
+     * @param string[] $referencesFields
+     * @param string[] $attributes
+     */
+    public static function consrtaintForeignKey(string $consrtaint_name, array $fields, string $referencesTableName, array $referencesFields, array $attributes): string;
+
 }

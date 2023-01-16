@@ -22,6 +22,6 @@ class ForeignKeyAttributes
 
     public static function constraint(string $name): string
     {
-        return '';
+        return 'CONSTRAINT ' . $name;
     }
 }

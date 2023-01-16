@@ -18,9 +18,13 @@ class FieldAttributes
 
     public const PRIMARY_KEY = 'PRIMARY KEY';
 
-    public static function default(mixed $value): string
+    public static function default(string|int $value): string
     {
-        return '';
+        if (is_numeric($value)) {
+            return 'DEFAULT ' . $value;
+        }
+
+        return "DEFAULT '$value'";
     }
 
     /**
@@ -30,6 +34,8 @@ class FieldAttributes
      */
     public static function foreignKey(array $fields, string $referencesTableName, array $referencesFields, array $attributes): string
     {
-        return '';
+        return 'FOREIGN KEY (' . implode(",", $fields)
+                . ') REFERENCES ' . $referencesTableName . ' (' . implode(",", $fields)
+                . ')' . count($attributes) > 0 ? ' ' . implode(",", $attributes) : '';
     }
 }

@@ -16,5 +16,5 @@ interface OperatorOptionsCreate extends SQLQueryBuilder
     /**
      * @param string[] $field_attribute
      */
-    public function addField(string $field_name, string $data_type, array $field_attribute = []): OperatorOptionsCreate|Operators;
+    public function addField(string $field_name, string $data_type, array $field_attribute = []): OperatorOptionsCreate;
 }

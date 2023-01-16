@@ -20,7 +20,7 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
     /**
      * @param array<string> $field_attribute
      */
-    public function addField(string $field_name, string $data_type, array $field_attribute = []): OperatorOptionsCreate|Operators
+    public function addField(string $field_name, string $data_type, array $field_attribute = []): OperatorOptionsCreate
     {
         $field_attribute_str = count($field_attribute) > 0 ? ' ' . implode(" ", $field_attribute) : '';
 

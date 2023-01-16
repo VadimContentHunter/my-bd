@@ -34,7 +34,21 @@ class FieldAttributes
      */
     public static function foreignKey(array $fields, string $referencesTableName, array $referencesFields, array $attributes): string
     {
-        return 'FOREIGN KEY (' . implode(",", $fields)
+        $constrain = '';
+
+        $attributes = array_filter(
+            $attributes,
+            function (string $value) use (&$constrain) {
+                if (preg_match('~CONSTRAINT\s~iu', $value)) {
+                    $constrain = $value;
+                    return false;
+                }
+
+                return true;
+            }
+        );
+
+        return $constrain . 'FOREIGN KEY (' . implode(",", $fields)
                 . ') REFERENCES ' . $referencesTableName . ' (' . implode(",", $fields)
                 . ')' . count($attributes) > 0 ? ' ' . implode(",", $attributes) : '';
     }

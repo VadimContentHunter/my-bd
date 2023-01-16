@@ -10,7 +10,7 @@ namespace vadimcontenthunter\MyDB\MySQL\Parameters\Fields;
  */
 class FieldAttributes
 {
-    public const AUTO_INCREMENT = 'AUTO INCREMENT';
+    public const AUTO_INCREMENT = 'AUTO_INCREMENT';
 
     public const UNIQUE = 'UNIQUE';
 

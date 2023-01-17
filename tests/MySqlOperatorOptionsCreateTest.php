@@ -44,4 +44,67 @@ class MySqlOperatorOptionsCreateTest extends TestCase
             ]);
         $this->assertEquals($expected, $this->mySqlOperatorOptionsCreate->getQuery());
     }
+
+    /**
+     * @test
+     */
+    public function test_consrtaintCheck_withExistingConstraint_shouldChangeInternalParameterQuery(): void
+    {
+        $expected = "CREATE TABLE Customers("
+                    . "Id INT AUTO_INCREMENT,"
+                    . "Age INT,"
+                    . "FirstName VARCHAR(20) NOT NULL,"
+                    . "LastName VARCHAR(20) NOT NULL,"
+                    . "Email VARCHAR(30),"
+                    . "Phone VARCHAR(20) NOT NULL,"
+                    . "CONSTRAINT customers_pk PRIMARY KEY(Id),"
+                    . "CONSTRAINT customer_phone_uq UNIQUE(Phone),"
+                    . "CONSTRAINT customer_age_chk CHECK((Age > 0) AND (Age < 100) AND (Id > 5))"
+                    . ")";
+        $query = "CREATE TABLE Customers("
+                . "Id INT AUTO_INCREMENT,"
+                . "Age INT,"
+                . "FirstName VARCHAR(20) NOT NULL,"
+                . "LastName VARCHAR(20) NOT NULL,"
+                . "Email VARCHAR(30),"
+                . "Phone VARCHAR(20) NOT NULL,"
+                . "CONSTRAINT customers_pk PRIMARY KEY(Id),"
+                . "CONSTRAINT customer_phone_uq UNIQUE(Phone),"
+                . "CONSTRAINT customer_age_chk CHECK((Age > 0) AND (Age < 100))"
+                . ")";
+        $this->mySqlOperatorOptionsCreate->setQuery($query);
+        $this->mySqlOperatorOptionsCreate->consrtaintCheck('customer_age_chk', 'Id', '>', '5');
+        $this->assertEquals($expected, $this->mySqlOperatorOptionsCreate->getQuery());
+    }
+
+    /**
+     * @test
+     */
+    public function test_consrtaintCheck_withANonexistentConstraint_shouldChangeInternalParameterQuery(): void
+    {
+        $expected = "CREATE TABLE Customers("
+                    . "Id INT AUTO_INCREMENT,"
+                    . "Age INT,"
+                    . "FirstName VARCHAR(20) NOT NULL,"
+                    . "LastName VARCHAR(20) NOT NULL,"
+                    . "Email VARCHAR(30),"
+                    . "Phone VARCHAR(20) NOT NULL,"
+                    . "CONSTRAINT customers_pk PRIMARY KEY(Id),"
+                    . "CONSTRAINT customer_phone_uq UNIQUE(Phone),"
+                    . "CONSTRAINT customer_age_chk CHECK((Id > 5))"
+                    . ")";
+        $query = "CREATE TABLE Customers("
+                . "Id INT AUTO_INCREMENT,"
+                . "Age INT,"
+                . "FirstName VARCHAR(20) NOT NULL,"
+                . "LastName VARCHAR(20) NOT NULL,"
+                . "Email VARCHAR(30),"
+                . "Phone VARCHAR(20) NOT NULL,"
+                . "CONSTRAINT customers_pk PRIMARY KEY(Id),"
+                . "CONSTRAINT customer_phone_uq UNIQUE(Phone)"
+                . ")";
+        $this->mySqlOperatorOptionsCreate->setQuery($query);
+        $this->mySqlOperatorOptionsCreate->consrtaintCheck('customer_age_chk', 'Id', '>', '5');
+        $this->assertEquals($expected, $this->mySqlOperatorOptionsCreate->getQuery());
+    }
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Operators;
 
 use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\SQLQueryBuilder;
-use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Operators\Operators;
 
 /**
  * @author    Vadim Volkovskyi <project.k.vadim@gmail.com>
@@ -18,7 +17,7 @@ interface OperatorOptionsCreate extends SQLQueryBuilder
      */
     public function addField(string $field_name, string $data_type, array $field_attribute = []): OperatorOptionsCreate;
 
-    public function consrtaintCheck(string $consrtaint_name, string $field_name, string $condition, string $value): OperatorOptionsCreate;
+    public function consrtaintCheck(string $consrtaint_name, string $value_a, string $operator, string $value_b): OperatorOptionsCreate;
 
     public function consrtaintUnique(string $consrtaint_name, string $field_name, string $condition, string $value): OperatorOptionsCreate;
 
@@ -27,6 +26,5 @@ interface OperatorOptionsCreate extends SQLQueryBuilder
      * @param string[] $referencesFields
      * @param string[] $attributes
      */
-    public static function consrtaintForeignKey(string $consrtaint_name, array $fields, string $referencesTableName, array $referencesFields, array $attributes): string;
-
+    public function consrtaintForeignKey(string $consrtaint_name, array $fields, string $referencesTableName, array $referencesFields, array $attributes): OperatorOptionsCreate;
 }

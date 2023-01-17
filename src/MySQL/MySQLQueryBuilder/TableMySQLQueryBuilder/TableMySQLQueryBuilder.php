@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace vadimcontenthunter\MyDB\MySQL\MySQLQueryBuilder\TableMySQLQueryBuilder;
 
 use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\SQLQueryBuilder;
-use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Operators\Operators;
 use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\TableSQLQueryBuilder;
+use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Operators\OperatorOptionsAlter;
 use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Operators\OperatorOptionsCreate;
+use vadimcontenthunter\MyDB\MySQL\MySQLQueryBuilder\TableMySQLQueryBuilder\Operators\MySqlOperatorOptionsAlter;
 use vadimcontenthunter\MyDB\MySQL\MySQLQueryBuilder\TableMySQLQueryBuilder\Operators\MySqlOperatorOptionsCreate;
-use vadimcontenthunter\MyDB\MySQL\MySQLQueryBuilder\TableMySQLQueryBuilder\Operators\MySqlOperators;
 
 /**
  * @author    Vadim Volkovskyi <project.k.vadim@gmail.com>
@@ -28,11 +28,11 @@ class TableMySQLQueryBuilder implements TableSQLQueryBuilder
         return $operator;
     }
 
-    public function alter(string $table_name): Operators
+    public function alter(string $table_name): OperatorOptionsAlter
     {
         $this->query .= 'ALTER TABLE ' . $table_name;
 
-        $operator = new MySqlOperators();
+        $operator = new MySqlOperatorOptionsAlter();
         $operator->setQuery($this->query);
         return $operator;
     }

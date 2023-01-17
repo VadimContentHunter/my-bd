@@ -29,7 +29,7 @@ class MySqlOperatorOptionsCreateTest extends TestCase
      */
     public function test_addField_withParameters_shouldChangeInternalParameterQuery(): void
     {
-        $expected = "CREATE TABLE Customers(Id INT PRIMARY KEY AUTO_INCREMENT,Age INT,FirstName VARCHAR(20) NOT NULL,LastName VARCHAR(20) NOT NULL)";
+        $expected = "CREATE TABLE Customers(Id INT PRIMARY KEY AUTO_INCREMENT,Age INT,FirstName VARCHAR(20) NOT NULL,LastName VARCHAR(20) NOT NULL);";
         $query = 'CREATE TABLE Customers';
         $this->mySqlOperatorOptionsCreate->setQuery($query);
         $this->mySqlOperatorOptionsCreate->addField('Id', FieldDataType::INT, [
@@ -61,7 +61,7 @@ class MySqlOperatorOptionsCreateTest extends TestCase
                     . "CONSTRAINT customers_pk PRIMARY KEY(Id),"
                     . "CONSTRAINT customer_phone_uq UNIQUE(Phone),"
                     . "CONSTRAINT customer_age_chk CHECK((Age > 0) AND (Age < 100) AND (Id > 5))"
-                    . ")";
+                    . ");";
         $query = "CREATE TABLE Customers("
                 . "Id INT AUTO_INCREMENT,"
                 . "Age INT,"
@@ -93,7 +93,7 @@ class MySqlOperatorOptionsCreateTest extends TestCase
                     . "CONSTRAINT customers_pk PRIMARY KEY(Id),"
                     . "CONSTRAINT customer_phone_uq UNIQUE(Phone),"
                     . "CONSTRAINT customer_age_chk CHECK((Id > 5))"
-                    . ")";
+                    . ");";
         $query = "CREATE TABLE Customers("
                 . "Id INT AUTO_INCREMENT,"
                 . "Age INT,"
@@ -143,7 +143,7 @@ class MySqlOperatorOptionsCreateTest extends TestCase
                 . "CONSTRAINT customers_pk PRIMARY KEY(Id),"
                 . "CONSTRAINT customer_phone_uq UNIQUE(Phone,Id,Email),"
                 . "CONSTRAINT customer_age_chk CHECK((Id > 5))"
-                . ")",
+                . ");",
                 "CREATE TABLE Customers("
                 . "Id INT AUTO_INCREMENT,"
                 . "Age INT,"
@@ -205,7 +205,7 @@ class MySqlOperatorOptionsCreateTest extends TestCase
                 . "CustomerId INT,"
                 . "CreatedAt Date,"
                 . "CONSTRAINT orders_customers_fk FOREIGN KEY(CustomerId) REFERENCES Customers (Id) ON DELETE CASCADE"
-                . ")",
+                . ");",
                 "CREATE TABLE Orders("
                 . "Id INT PRIMARY KEY AUTO_INCREMENT,"
                 . "CustomerId INT,"

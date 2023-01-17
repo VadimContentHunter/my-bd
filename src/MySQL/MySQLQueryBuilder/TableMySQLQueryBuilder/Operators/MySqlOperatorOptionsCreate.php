@@ -13,7 +13,7 @@ use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Oper
  * @author    Vadim Volkovskyi <project.k.vadim@gmail.com>
  * @copyright (c) Vadim Volkovskyi 2022
  */
-class MySqlOperatorOptionsAlter implements OperatorOptionsCreate
+class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
 {
     protected string $query = '';
 

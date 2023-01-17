@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use vadimcontenthunter\MyDB\Exceptions\QueryBuilderException;
 use vadimcontenthunter\MyDB\MySQL\Parameters\Fields\FieldDataType;
 use vadimcontenthunter\MyDB\MySQL\Parameters\Fields\FieldAttributes;
+use vadimcontenthunter\MyDB\MySQL\Parameters\Fields\ForeignKeyAttributes;
 use vadimcontenthunter\MyDB\MySQL\MySQLQueryBuilder\TableMySQLQueryBuilder\Operators\MySqlOperatorOptionsCreate;
 
 /**
@@ -159,6 +160,67 @@ class MySqlOperatorOptionsCreateTest extends TestCase
                     'Id',
                     'Email',
                 ]
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider providerConsrtaintForeignKey
+     *
+     * @param string[] $field_names
+     * @param string[] $references_fields
+     */
+    public function test_consrtaintForeignKey_withParameters_shouldChangeInternalParameterQuery(
+        string $expected,
+        string $query,
+        string $consrtaint_name,
+        array $field_names,
+        string $references_table_name,
+        array $references_fields,
+        ?string $attribute_on,
+        ?string $action_on
+    ): void {
+        $this->mySqlOperatorOptionsCreate->setQuery($query);
+        $this->mySqlOperatorOptionsCreate->consrtaintForeignKey(
+            $consrtaint_name,
+            $field_names,
+            $references_table_name,
+            $references_fields,
+            $attribute_on,
+            $action_on
+        );
+        $this->assertEquals($expected, $this->mySqlOperatorOptionsCreate->getQuery());
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function providerConsrtaintForeignKey(): array
+    {
+        return [
+            'withExistingConstraint' => [
+                "CREATE TABLE Orders("
+                . "Id INT PRIMARY KEY AUTO_INCREMENT,"
+                . "CustomerId INT,"
+                . "CreatedAt Date,"
+                . "CONSTRAINT orders_customers_fk FOREIGN KEY(CustomerId) REFERENCES Customers (Id) ON DELETE CASCADE"
+                . ")",
+                "CREATE TABLE Orders("
+                . "Id INT PRIMARY KEY AUTO_INCREMENT,"
+                . "CustomerId INT,"
+                . "CreatedAt Date"
+                . ")",
+                'orders_customers_fk',
+                [
+                    'CustomerId',
+                ],
+                'Customers',
+                [
+                    'Id',
+                ],
+                ForeignKeyAttributes::ON_DELETE,
+                ForeignKeyAttributes::ACTION_CASCADE,
             ],
         ];
     }

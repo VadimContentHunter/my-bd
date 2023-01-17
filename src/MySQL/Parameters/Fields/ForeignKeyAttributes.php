@@ -10,18 +10,13 @@ namespace vadimcontenthunter\MyDB\MySQL\Parameters\Fields;
  */
 class ForeignKeyAttributes
 {
-    public const CASCADE = 'CASCADE';
+    public const ACTION_CASCADE = 'CASCADE';
 
-    public const SET_NULL = 'SET NULL';
+    public const ACTION_SET_NULL = 'SET NULL';
 
-    public const RESTRICT = 'RESTRICT';
+    public const ACTION_RESTRICT = 'RESTRICT';
 
     public const ON_DELETE = 'ON DELETE';
 
     public const ON_UPDATE = 'ON UPDATE';
-
-    public static function constraint(string $name): string
-    {
-        return 'CONSTRAINT ' . $name;
-    }
 }

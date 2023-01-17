@@ -19,7 +19,10 @@ interface OperatorOptionsCreate extends SQLQueryBuilder
 
     public function consrtaintCheck(string $consrtaint_name, string $value_a, string $operator, string $value_b): OperatorOptionsCreate;
 
-    public function consrtaintUnique(string $consrtaint_name, string $field_name, string $condition, string $value): OperatorOptionsCreate;
+    /**
+     * @param string[] $field_names
+     */
+    public function consrtaintUnique(string $consrtaint_name, array $field_names): OperatorOptionsCreate;
 
     /**
      * @param string[] $fields

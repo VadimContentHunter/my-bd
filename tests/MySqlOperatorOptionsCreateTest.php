@@ -107,4 +107,59 @@ class MySqlOperatorOptionsCreateTest extends TestCase
         $this->mySqlOperatorOptionsCreate->consrtaintCheck('customer_age_chk', 'Id', '>', '5');
         $this->assertEquals($expected, $this->mySqlOperatorOptionsCreate->getQuery());
     }
+
+    /**
+     * @test
+     * @dataProvider providerConsrtaintUnique
+     *
+     * @param string[] $field_names
+     */
+    public function test_consrtaintUnique_withParameters_shouldChangeInternalParameterQuery(
+        string $expected,
+        string $query,
+        string $consrtaint_name,
+        array $field_names
+    ): void {
+        $this->mySqlOperatorOptionsCreate->setQuery($query);
+        $this->mySqlOperatorOptionsCreate->consrtaintUnique($consrtaint_name, $field_names);
+        $this->assertEquals($expected, $this->mySqlOperatorOptionsCreate->getQuery());
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function providerConsrtaintUnique(): array
+    {
+        return [
+            'withExistingConstraint' => [
+                "CREATE TABLE Customers("
+                . "Id INT AUTO_INCREMENT,"
+                . "Age INT,"
+                . "FirstName VARCHAR(20) NOT NULL,"
+                . "LastName VARCHAR(20) NOT NULL,"
+                . "Email VARCHAR(30),"
+                . "Phone VARCHAR(20) NOT NULL,"
+                . "CONSTRAINT customers_pk PRIMARY KEY(Id),"
+                . "CONSTRAINT customer_phone_uq UNIQUE(Phone,Id,Email),"
+                . "CONSTRAINT customer_age_chk CHECK((Id > 5))"
+                . ")",
+                "CREATE TABLE Customers("
+                . "Id INT AUTO_INCREMENT,"
+                . "Age INT,"
+                . "FirstName VARCHAR(20) NOT NULL,"
+                . "LastName VARCHAR(20) NOT NULL,"
+                . "Email VARCHAR(30),"
+                . "Phone VARCHAR(20) NOT NULL,"
+                . "CONSTRAINT customers_pk PRIMARY KEY(Id),"
+                . "CONSTRAINT customer_phone_uq UNIQUE(Phone),"
+                . "CONSTRAINT customer_age_chk CHECK((Id > 5))"
+                . ")",
+                'customer_phone_uq',
+                [
+                    'Id',
+                    'Email',
+                ]
+            ],
+        ];
+    }
 }

@@ -17,6 +17,21 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
 {
     protected string $query = '';
 
+    public function setQuery(string $query): SQLQueryBuilder
+    {
+        $this->query = $query;
+        return $this;
+    }
+
+    public function getQuery(): string
+    {
+        if (preg_match('~;$~iu', $this->query)) {
+            return $this->query;
+        }
+
+        return $this->query . ';';
+    }
+
     /**
      * @param  array<string> $field_attribute
      * @throws QueryBuilderException
@@ -122,16 +137,5 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
         }
 
         return $this;
-    }
-
-    public function setQuery(string $query): SQLQueryBuilder
-    {
-        $this->query = $query;
-        return $this;
-    }
-
-    public function getQuery(): string
-    {
-        return $this->query;
     }
 }

@@ -24,7 +24,11 @@ class MySqlOperatorOptionsAlter implements OperatorOptionsAlter
 
     public function getQuery(): string
     {
-        return $this->query;
+        if (preg_match('~;$~iu', $this->query)) {
+            return $this->query;
+        }
+
+        return $this->query . ';';
     }
 
     /**

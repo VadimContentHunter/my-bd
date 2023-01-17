@@ -48,7 +48,11 @@ class MySqlOperators implements Operators
 
     public function getQuery(): string
     {
-        return $this->query;
+        if (preg_match('~;$~iu', $this->query)) {
+            return $this->query;
+        }
+
+        return $this->query . ';';
     }
 
     public function isCommand(string $command): bool

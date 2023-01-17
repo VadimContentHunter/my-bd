@@ -31,39 +31,82 @@ class MySqlOperatorOptionsAlter implements OperatorOptionsAlter
         return $this->query . ';';
     }
 
+    public function isOperatorAlterTable(): bool
+    {
+        if (preg_match('~^(?<operator>ALTER\sTABLE)\s.+$~iu', $this->query)) {
+            return true;
+        }
+        return false;
+    }
+
     /**
-     * @param array<string> $field_attribute
+     * @param  array<string> $field_attribute
+     * @throws QueryBuilderException
      */
     public function add(string $field_name, string $data_type, array $field_attribute): OperatorOptionsAlter
     {
+        if (!$this->isOperatorAlterTable()) {
+            throw new QueryBuilderException('Error, ALTER TABLE command not found.');
+        }
+
         return $this;
     }
 
     /**
-     * @param array<string> $field_attribute
+     * @param  array<string> $field_attribute
+     * @throws QueryBuilderException
      */
     public function modifyColumn(string $field_name, string $data_type, array $field_attribute): OperatorOptionsAlter
     {
+        if (!$this->isOperatorAlterTable()) {
+            throw new QueryBuilderException('Error, ALTER TABLE command not found.');
+        }
+
         return $this;
     }
 
     public function dropColumn(string $field_name): OperatorOptionsAlter
     {
+        if (!$this->isOperatorAlterTable()) {
+            throw new QueryBuilderException('Error, ALTER TABLE command not found.');
+        }
+
         return $this;
     }
 
+    /**
+     * @throws QueryBuilderException
+     */
     public function alterColumn(string $field_name, string $default_value): OperatorOptionsAlter
     {
+        if (!$this->isOperatorAlterTable()) {
+            throw new QueryBuilderException('Error, ALTER TABLE command not found.');
+        }
+
         return $this;
     }
 
+    /**
+     * @throws QueryBuilderException
+     */
     public function addConsrtaint(string $consrtaint_name, string $value): OperatorOptionsAlter
     {
+        if (!$this->isOperatorAlterTable()) {
+            throw new QueryBuilderException('Error, ALTER TABLE command not found.');
+        }
+
         return $this;
     }
 
+    /**
+     * @throws QueryBuilderException
+     */
     public function dropConsrtaint(string $consrtaint_name, string $value): OperatorOptionsAlter
     {
+        if (!$this->isOperatorAlterTable()) {
+            throw new QueryBuilderException('Error, ALTER TABLE command not found.');
+        }
+
         return $this;
     }
 }

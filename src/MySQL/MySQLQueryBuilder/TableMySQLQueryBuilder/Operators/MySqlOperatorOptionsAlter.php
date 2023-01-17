@@ -12,7 +12,7 @@ use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Oper
  * @author    Vadim Volkovskyi <project.k.vadim@gmail.com>
  * @copyright (c) Vadim Volkovskyi 2022
  */
-class MySqlOperatorOptionsCreate implements OperatorOptionsAlter
+class MySqlOperatorOptionsAlter implements OperatorOptionsAlter
 {
     protected string $query = '';
 
@@ -32,6 +32,7 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsAlter
      */
     public function add(string $field_name, string $data_type, array $field_attribute): OperatorOptionsAlter
     {
+        return $this;
     }
 
     /**
@@ -39,21 +40,26 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsAlter
      */
     public function modifyColumn(string $field_name, string $data_type, array $field_attribute): OperatorOptionsAlter
     {
+        return $this;
     }
 
     public function dropColumn(string $field_name): OperatorOptionsAlter
     {
+        return $this;
     }
 
     public function alterColumn(string $field_name, string $default_value): OperatorOptionsAlter
     {
+        return $this;
     }
 
     public function addConsrtaint(string $consrtaint_name, string $value): OperatorOptionsAlter
     {
+        return $this;
     }
 
     public function dropConsrtaint(string $consrtaint_name, string $value): OperatorOptionsAlter
     {
+        return $this;
     }
 }

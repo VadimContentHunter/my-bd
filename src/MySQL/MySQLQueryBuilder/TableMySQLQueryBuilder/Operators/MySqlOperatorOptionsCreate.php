@@ -42,7 +42,7 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
     {
         if (
             preg_match(
-                "~^CREATE\sTABLE\s\w+\s?\(.+CONSTRAINT\scustomer_age_chk\s(?<values>CHECK\s?\([\w\s<>()=]+)\).*\);?$~iu",
+                "~^CREATE\sTABLE\s\w+\s?\(.+CONSTRAINT\s" . $consrtaint_name . "\s(?<values>CHECK\s?\([\w\s<>()=]+)\).*\);?$~iu",
                 $this->query,
                 $matches
             )
@@ -72,7 +72,7 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
     {
         if (
             preg_match(
-                "~^CREATE\sTABLE\s\w+\s?\(.+CONSTRAINT\scustomer_phone_uq\s(?<values>UNIQUE\s?\([\w,\s]+)\).*\);?$~iu",
+                "~^CREATE\sTABLE\s\w+\s?\(.+CONSTRAINT\s" . $consrtaint_name . "\s(?<values>UNIQUE\s?\([\w,\s]+)\).*\);?$~iu",
                 $this->query,
                 $matches
             )
@@ -95,17 +95,31 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
     }
 
     /**
-     * @param string[] $fields
-     * @param string[] $referencesFields
-     * @param string[] $attributes
+     * @param string[] $field_names
+     * @param string[] $references_fields
      */
     public function consrtaintForeignKey(
         string $consrtaint_name,
-        array $fields,
-        string $referencesTableName,
-        array $referencesFields,
-        array $attributes
+        array $field_names,
+        string $references_table_name,
+        array $references_fields,
+        ?string $attribute_on,
+        ?string $action_on
     ): OperatorOptionsCreate {
+        if (preg_match("~CONSTRAINT\s" . $consrtaint_name . "\s~iu", $this->query)) {
+            throw new QueryBuilderException('Error, name for CONSTRAINT already taken.');
+        } elseif (preg_match("~FOREIGN KEY~iu", $this->query)) {
+            throw new QueryBuilderException('Error, FOREIGN KEY statement already specified.');
+        } elseif (preg_match("~^CREATE TABLE \w+\s?\((?<values>.+)\).*~iu", $this->query, $matches)) {
+            $foreignKey = 'CONSTRAINT ' . $consrtaint_name . ' FOREIGN KEY(' . implode(",", $field_names)
+                            . ') REFERENCES ' . $references_table_name . ' (' . implode(",", $references_fields) . ')'
+                            . ($attribute_on !== null && $action_on !== null ? ' ' . $attribute_on . ' ' . $action_on : '');
+            $values = $matches['values'] . ',' . $foreignKey;
+            $this->query = preg_replace('~' . preg_quote($matches['values'], '/') . '~u', $values, $this->query)
+                           ?? throw new QueryBuilderException('Error, incorrect value.');
+        } else {
+            throw new QueryBuilderException('Error, incorrect value.');
+        }
 
         return $this;
     }

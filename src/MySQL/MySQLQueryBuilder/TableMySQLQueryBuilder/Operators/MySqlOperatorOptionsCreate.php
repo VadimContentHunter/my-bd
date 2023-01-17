@@ -27,10 +27,56 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
         if (preg_match("~^CREATE TABLE \w+\s?\((?<values>.+)\).*~iu", $this->query, $matches)) {
             $values = $matches['values'] . ',' . $field_name . ' ' . $data_type . $field_attribute_str;
             $this->query = preg_replace('~' . preg_quote($matches['values'], '/') . '~u', $values, $this->query)
-                            ?? throw new QueryBuilderException('Error, incorrect value table name.');
+                            ?? throw new QueryBuilderException('Error, incorrect value.');
         } else {
             $this->query .= '(' . $field_name . ' ' . $data_type . $field_attribute_str . ')';
         }
+        return $this;
+    }
+
+    public function consrtaintCheck(string $consrtaint_name, string $value_a, string $operator, string $value_b): OperatorOptionsCreate
+    {
+        if (
+            preg_match(
+                "~^CREATE\sTABLE\s\w+\s?\(.+CONSTRAINT\scustomer_age_chk\sCHECK\((?<values>[\w\s<>()=]+)\).*\)~iu",
+                $this->query,
+                $matches
+            )
+        ) {
+            $values = $matches['values'] . ' AND (' . $value_a . ' ' . $operator . ' ' . $value_b . ')';
+            $this->query = preg_replace('~' . preg_quote($matches['values'], '/') . '~u', $values, $this->query)
+                            ?? throw new QueryBuilderException('Error, incorrect value.');
+        } elseif (preg_match("~CONSTRAINT\s" . $consrtaint_name . "\s~iu", $this->query)) {
+            throw new QueryBuilderException('Error, name for CONSTRAINT already taken.');
+        } elseif (preg_match("~^CREATE TABLE \w+\s?\((?<values>.+)\).*~iu", $this->query, $matches)) {
+            $check = 'CONSTRAINT ' . $consrtaint_name . ' CHECK((' . $value_a . ' ' . $operator . ' ' . $value_b . '))';
+            $values = $matches['values'] . ',' . $check;
+            $this->query = preg_replace('~' . preg_quote($matches['values'], '/') . '~u', $values, $this->query)
+                            ?? throw new QueryBuilderException('Error, incorrect value.');
+        } else {
+            throw new QueryBuilderException('Error, incorrect value.');
+        }
+        return $this;
+    }
+
+    public function consrtaintUnique(string $consrtaint_name, string $field_name, string $condition, string $value): OperatorOptionsCreate
+    {
+        return $this;
+    }
+
+    /**
+     * @param string[] $fields
+     * @param string[] $referencesFields
+     * @param string[] $attributes
+     */
+    public function consrtaintForeignKey(
+        string $consrtaint_name,
+        array $fields,
+        string $referencesTableName,
+        array $referencesFields,
+        array $attributes
+    ): OperatorOptionsCreate {
+
         return $this;
     }
 
@@ -40,9 +86,6 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getQuery(): string
     {
         return $this->query;

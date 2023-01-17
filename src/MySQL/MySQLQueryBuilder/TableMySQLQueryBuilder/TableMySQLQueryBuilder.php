@@ -9,7 +9,6 @@ use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Tabl
 use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Operators\OperatorOptionsAlter;
 use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Operators\OperatorOptionsCreate;
 use vadimcontenthunter\MyDB\MySQL\MySQLQueryBuilder\TableMySQLQueryBuilder\Operators\MySqlOperatorOptionsAlter;
-use vadimcontenthunter\MyDB\MySQL\MySQLQueryBuilder\TableMySQLQueryBuilder\Operators\MySqlOperatorOptionsCreate;
 
 /**
  * @author    Vadim Volkovskyi <project.k.vadim@gmail.com>
@@ -23,7 +22,7 @@ class TableMySQLQueryBuilder implements TableSQLQueryBuilder
     {
         $this->query .= 'CREATE TABLE ' . $table_name;
 
-        $operator = new MySqlOperatorOptionsCreate();
+        $operator = new MySqlOperatorOptionsAlter();
         $operator->setQuery($this->query);
         return $operator;
     }

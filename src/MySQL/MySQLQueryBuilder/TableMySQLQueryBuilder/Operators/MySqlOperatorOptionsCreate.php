@@ -13,7 +13,7 @@ use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Oper
  * @author    Vadim Volkovskyi <project.k.vadim@gmail.com>
  * @copyright (c) Vadim Volkovskyi 2022
  */
-class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
+class MySqlOperatorOptionsAlter implements OperatorOptionsCreate
 {
     protected string $query = '';
 
@@ -25,11 +25,23 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
 
     public function getQuery(): string
     {
+        if (!$this->isOperatorCreateTable()) {
+            throw new QueryBuilderException('Error, CREATE TABLE command not found.');
+        }
+
         if (preg_match('~;$~iu', $this->query)) {
             return $this->query;
         }
 
         return $this->query . ';';
+    }
+
+    public function isOperatorCreateTable(): bool
+    {
+        if (preg_match('~^(?<operator>CREATE\sTABLE)\s.+$~iu', $this->query)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -38,6 +50,10 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
      */
     public function addField(string $field_name, string $data_type, array $field_attribute = []): OperatorOptionsCreate
     {
+        if (!$this->isOperatorCreateTable()) {
+            throw new QueryBuilderException('Error, CREATE TABLE command not found.');
+        }
+
         $field_attribute_str = count($field_attribute) > 0 ? ' ' . implode(" ", $field_attribute) : '';
 
         if (preg_match("~^CREATE TABLE \w+\s?\((?<values>.+)\).*~iu", $this->query, $matches)) {
@@ -55,6 +71,10 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
      */
     public function consrtaintCheck(string $consrtaint_name, string $value_a, string $operator, string $value_b): OperatorOptionsCreate
     {
+        if (!$this->isOperatorCreateTable()) {
+            throw new QueryBuilderException('Error, CREATE TABLE command not found.');
+        }
+
         if (
             preg_match(
                 "~^CREATE\sTABLE\s\w+\s?\(.+CONSTRAINT\s" . $consrtaint_name . "\s(?<values>CHECK\s?\([\w\s<>()=]+)\).*\);?$~iu",
@@ -85,6 +105,10 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
      */
     public function consrtaintUnique(string $consrtaint_name, array $field_names): OperatorOptionsCreate
     {
+        if (!$this->isOperatorCreateTable()) {
+            throw new QueryBuilderException('Error, CREATE TABLE command not found.');
+        }
+
         if (
             preg_match(
                 "~^CREATE\sTABLE\s\w+\s?\(.+CONSTRAINT\s" . $consrtaint_name . "\s(?<values>UNIQUE\s?\([\w,\s]+)\).*\);?$~iu",
@@ -121,6 +145,10 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
         ?string $attribute_on,
         ?string $action_on
     ): OperatorOptionsCreate {
+        if (!$this->isOperatorCreateTable()) {
+            throw new QueryBuilderException('Error, CREATE TABLE command not found.');
+        }
+
         if (preg_match("~CONSTRAINT\s" . $consrtaint_name . "\s~iu", $this->query)) {
             throw new QueryBuilderException('Error, name for CONSTRAINT already taken.');
         } elseif (preg_match("~FOREIGN KEY~iu", $this->query)) {

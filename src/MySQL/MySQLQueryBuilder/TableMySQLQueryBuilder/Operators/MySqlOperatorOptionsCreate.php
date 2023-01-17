@@ -18,7 +18,8 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
     protected string $query = '';
 
     /**
-     * @param array<string> $field_attribute
+     * @param  array<string> $field_attribute
+     * @throws QueryBuilderException
      */
     public function addField(string $field_name, string $data_type, array $field_attribute = []): OperatorOptionsCreate
     {
@@ -34,11 +35,14 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
         return $this;
     }
 
+    /**
+     * @throws QueryBuilderException
+     */
     public function consrtaintCheck(string $consrtaint_name, string $value_a, string $operator, string $value_b): OperatorOptionsCreate
     {
         if (
             preg_match(
-                "~^CREATE\sTABLE\s\w+\s?\(.+CONSTRAINT\scustomer_age_chk\sCHECK\((?<values>[\w\s<>()=]+)\).*\)~iu",
+                "~^CREATE\sTABLE\s\w+\s?\(.+CONSTRAINT\scustomer_age_chk\s(?<values>CHECK\s?\([\w\s<>()=]+)\).*\);?$~iu",
                 $this->query,
                 $matches
             )
@@ -56,11 +60,37 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
         } else {
             throw new QueryBuilderException('Error, incorrect value.');
         }
+
         return $this;
     }
 
-    public function consrtaintUnique(string $consrtaint_name, string $field_name, string $condition, string $value): OperatorOptionsCreate
+    /**
+     * @param  string[] $field_names
+     * @throws QueryBuilderException
+     */
+    public function consrtaintUnique(string $consrtaint_name, array $field_names): OperatorOptionsCreate
     {
+        if (
+            preg_match(
+                "~^CREATE\sTABLE\s\w+\s?\(.+CONSTRAINT\scustomer_phone_uq\s(?<values>UNIQUE\s?\([\w,\s]+)\).*\);?$~iu",
+                $this->query,
+                $matches
+            )
+        ) {
+            $values = $matches['values'] . ',' . implode(",", $field_names);
+            $this->query = preg_replace('~' . preg_quote($matches['values'], '/') . '~u', $values, $this->query)
+                            ?? throw new QueryBuilderException('Error, incorrect value.');
+        } elseif (preg_match("~CONSTRAINT\s" . $consrtaint_name . "\s~iu", $this->query)) {
+            throw new QueryBuilderException('Error, name for CONSTRAINT already taken.');
+        } elseif (preg_match("~^CREATE TABLE \w+\s?\((?<values>.+)\).*~iu", $this->query, $matches)) {
+            $check = 'CONSTRAINT ' . $consrtaint_name . ' UNIQUE(' . implode(",", $field_names) . ')';
+            $values = $matches['values'] . ',' . $check;
+            $this->query = preg_replace('~' . preg_quote($matches['values'], '/') . '~u', $values, $this->query)
+                           ?? throw new QueryBuilderException('Error, incorrect value.');
+        } else {
+            throw new QueryBuilderException('Error, incorrect value.');
+        }
+
         return $this;
     }
 

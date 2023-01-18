@@ -10,6 +10,9 @@ namespace vadimcontenthunter;
  */
 class Connector
 {
+    /**
+     * @param ?array<array<string,mixed>> $options
+     */
     public function __construct(
         public ?string $dsn,
         public ?string $user,
@@ -23,7 +26,7 @@ class Connector
     /**
      * @return array<array<string,mixed>>
      */
-    public function getOptions(): array
+    public function getOptions(): ?array
     {
         return $this->options;
     }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace vadimcontenthunter\MyDB\Requests;
 
-use vadimcontenthunter\Connector;
 use vadimcontenthunter\MyDB\Interfaces\Request;
+use vadimcontenthunter\MyDB\Interfaces\ConnectorInterface;
 use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\SQLQueryBuilder;
 
 /**
@@ -17,7 +17,7 @@ class SingleRequest implements Request
     protected string $query;
 
     public function __construct(
-        protected Connector $connector
+        protected ConnectorInterface $connector
     ) {
     }
 

@@ -16,6 +16,8 @@ class FieldAttributes
 
     public const NOT_NULL = 'NOT NULL';
 
+    public const NULL = 'NULL';
+
     public const PRIMARY_KEY = 'PRIMARY KEY';
 
     public static function default(string|int $value): string
@@ -25,31 +27,5 @@ class FieldAttributes
         }
 
         return "DEFAULT '$value'";
-    }
-
-    /**
-     * @param string[] $fields
-     * @param string[] $referencesFields
-     * @param string[] $attributes
-     */
-    public static function foreignKey(array $fields, string $referencesTableName, array $referencesFields, array $attributes): string
-    {
-        $constrain = '';
-
-        $attributes = array_filter(
-            $attributes,
-            function (string $value) use (&$constrain) {
-                if (preg_match('~CONSTRAINT\s~iu', $value)) {
-                    $constrain = $value;
-                    return false;
-                }
-
-                return true;
-            }
-        );
-
-        return $constrain . 'FOREIGN KEY (' . implode(",", $fields)
-                . ') REFERENCES ' . $referencesTableName . ' (' . implode(",", $fields)
-                . ')' . count($attributes) > 0 ? ' ' . implode(",", $attributes) : '';
     }
 }

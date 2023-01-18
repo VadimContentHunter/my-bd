@@ -125,8 +125,6 @@ class MySqlOperatorOptionsAlterTest extends TestCase
     /**
      * @test
      * @dataProvider providerAddColumn
-     *
-     * @param array<array<string,mixed>> $parameters
      */
     public function test_multipleMethods_withParameters_shouldChangeInternalParameterQuery(): void
     {

@@ -13,9 +13,9 @@ use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\DataSQLQueryBuilder\Opera
  */
 interface OperatorOptionsSelect extends SQLQueryBuilder
 {
-    public function from(string $table_name): OperatorOptionsSelect|Operators;
+    public function from(string $table_name): Operators;
 
-    public function addField(string $field_name, string $aggregate_function = '', ?string $as = null): OperatorOptionsSelect|Operators;
+    public function addField(string $field_name, ?string $as_name = null, ?string $aggregate_function = null): OperatorOptionsSelect;
 
-    public function distinct(): OperatorOptionsSelect|Operators;
+    public function distinct(): OperatorOptionsSelect;
 }

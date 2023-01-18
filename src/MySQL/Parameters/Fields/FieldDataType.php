@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace vadimcontenthunter\MyDB\MySQL\Parameters\Fields;
 
+use vadimcontenthunter\MyDB\Exceptions\QueryBuilderException;
+
 /**
  * @author    Vadim Volkovskyi <project.k.vadim@gmail.com>
  * @copyright (c) Vadim Volkovskyi 2022
@@ -73,13 +75,19 @@ class FieldDataType
 
     public const LARGEBLOB = 'LARGEBLOB';
 
+    public const BOOL = 'BOOL';
+
     /**
      * @param int $m общее количество цифр
      * @param int $d количество цифр после запятой
      */
     public static function getTypeDouble(int $m, int $d): string
     {
-        return '';
+        if ($m < 1 || $d < 0) {
+            throw new QueryBuilderException('Error, Incorrect parameters.');
+        }
+
+        return 'DOUBLE(' . $m . ',' . $d . ')';
     }
 
     /**
@@ -88,7 +96,11 @@ class FieldDataType
      */
     public static function getTypeFloat(int $m, int $d): string
     {
-        return '';
+        if ($m < 1 || $d < 0) {
+            throw new QueryBuilderException('Error, Incorrect parameters.');
+        }
+
+        return 'FLOAT(' . $m . ',' . $d . ')';
     }
 
     /**
@@ -102,21 +114,28 @@ class FieldDataType
      */
     public static function getTypeDecimal(int $precision, int $scale): string
     {
-        return '';
-    }
+        if ($precision < 1 || $precision > 65 || $scale < 0 || $scale >= $precision) {
+            throw new QueryBuilderException('Error, Incorrect parameters.');
+        }
 
-    public static function getTypeBool(bool $value): string
-    {
-        return '';
+        return 'DECIMAL(' . $precision . ',' . $scale . ')';
     }
 
     public static function getTypeChar(int $length): string
     {
-        return '';
+        if ($length < 1 || $length > 255) {
+            throw new QueryBuilderException('Error, Incorrect parameters.');
+        }
+
+        return 'CHAR(' . $length . ')';
     }
 
     public static function getTypeVarchar(int $length): string
     {
-        return '';
+        if ($length < 1 || $length > 65535) {
+            throw new QueryBuilderException('Error, Incorrect parameters.');
+        }
+
+        return 'VARCHAR(' . $length . ')';
     }
 }

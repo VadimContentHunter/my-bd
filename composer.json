@@ -18,12 +18,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Vadimcontenthunter\\MyDB\\": "src/"
+            "vadimcontenthunter\\MyDB\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Vadimcontenthunter\\MyDB\\Tests\\": "tests/"
+            "vadimcontenthunter\\MyDB\\Tests\\": "tests/"
         }
     },
     "scripts": {

@@ -10,26 +10,22 @@ namespace vadimcontenthunter\MyDB\MySQL\Parameters\Fields;
  */
 class FieldAttributes
 {
-    public const AUTO_INCREMENT = 'AUTO INCREMENT';
+    public const AUTO_INCREMENT = 'AUTO_INCREMENT';
 
     public const UNIQUE = 'UNIQUE';
 
     public const NOT_NULL = 'NOT NULL';
 
+    public const NULL = 'NULL';
+
     public const PRIMARY_KEY = 'PRIMARY KEY';
 
-    public static function default(mixed $value): string
+    public static function default(string|int $value): string
     {
-        return '';
-    }
+        if (is_numeric($value)) {
+            return 'DEFAULT ' . $value;
+        }
 
-    /**
-     * @param string[] $fields
-     * @param string[] $referencesFields
-     * @param string[] $attributes
-     */
-    public static function foreignKey(array $fields, string $referencesTableName, array $referencesFields, array $attributes): string
-    {
-        return '';
+        return "DEFAULT '$value'";
     }
 }

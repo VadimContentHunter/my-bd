@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder;
 
 use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\SQLQueryBuilder;
-use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Operators\Operators;
+use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Operators\OperatorOptionsAlter;
+use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Operators\OperatorOptionsCreate;
 
 /**
  * @author    Vadim Volkovskyi <project.k.vadim@gmail.com>
@@ -13,9 +14,9 @@ use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\TableSQLQueryBuilder\Oper
  */
 interface TableSQLQueryBuilder extends SQLQueryBuilder
 {
-    public function create(string $table_name): TableSQLQueryBuilder|Operators;
+    public function create(string $table_name): OperatorOptionsCreate;
 
-    public function alter(string $field_name): Operators;
+    public function alter(string $field_name): OperatorOptionsAlter;
 
     public function drop(string $table_name): TableSQLQueryBuilder;
 

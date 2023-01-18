@@ -13,5 +13,7 @@ use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\DataSQLQueryBuilder\Opera
  */
 interface OperatorOptionsUpdate extends SQLQueryBuilder
 {
-    public function set(string $field_name, mixed $value): OperatorOptionsUpdate|Operators;
+    public function set(string $field_name, string|int $value): OperatorOptionsUpdate;
+
+    public function getOperators(): Operators;
 }

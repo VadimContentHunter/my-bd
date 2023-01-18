@@ -31,23 +31,34 @@ class MySqlOperatorOptionsAlter implements OperatorOptionsAlter
         return $this->query . ';';
     }
 
-    public function isOperatorAlterTable(): bool
+    protected function isOperatorAlterTable(): bool
     {
-        if (preg_match('~^(?<operator>ALTER\sTABLE)\s.+$~iu', $this->query)) {
+        if (preg_match('~^ALTER\sTABLE\s\w+~iu', $this->query)) {
             return true;
         }
         return false;
+    }
+
+    protected function getEndOfOperator(): ?string
+    {
+        if (preg_match('~(ADD|DROP|ALTER\sCOLUMN|MODIFY)~iu', $this->query)) {
+            return ',';
+        }
+        return null;
     }
 
     /**
      * @param  array<string> $field_attribute
      * @throws QueryBuilderException
      */
-    public function add(string $field_name, string $data_type, array $field_attribute): OperatorOptionsAlter
+    public function addColumn(string $field_name, string $data_type, array $field_attribute = []): OperatorOptionsAlter
     {
         if (!$this->isOperatorAlterTable()) {
             throw new QueryBuilderException('Error, ALTER TABLE command not found.');
         }
+
+        $field_attribute_str = count($field_attribute) > 0 ? ' ' . implode(" ", $field_attribute) : '';
+        $this->query .= ($this->getEndOfOperator() ?? ' ') . 'ADD ' . $field_name . ' ' . $data_type . $field_attribute_str;
 
         return $this;
     }
@@ -56,11 +67,14 @@ class MySqlOperatorOptionsAlter implements OperatorOptionsAlter
      * @param  array<string> $field_attribute
      * @throws QueryBuilderException
      */
-    public function modifyColumn(string $field_name, string $data_type, array $field_attribute): OperatorOptionsAlter
+    public function modifyColumn(string $field_name, string $data_type, array $field_attribute = []): OperatorOptionsAlter
     {
         if (!$this->isOperatorAlterTable()) {
             throw new QueryBuilderException('Error, ALTER TABLE command not found.');
         }
+
+        $field_attribute_str = count($field_attribute) > 0 ? ' ' . implode(" ", $field_attribute) : '';
+        $this->query .= ($this->getEndOfOperator() ?? ' ') . 'MODIFY COLUMN ' . $field_name . ' ' . $data_type . $field_attribute_str;
 
         return $this;
     }
@@ -71,17 +85,25 @@ class MySqlOperatorOptionsAlter implements OperatorOptionsAlter
             throw new QueryBuilderException('Error, ALTER TABLE command not found.');
         }
 
+        $this->query .= ($this->getEndOfOperator() ?? ' ') . 'DROP COLUMN ' . $field_name;
+
         return $this;
     }
 
     /**
      * @throws QueryBuilderException
      */
-    public function alterColumn(string $field_name, string $default_value): OperatorOptionsAlter
+    public function alterColumn(string $field_name, string|int $default_value): OperatorOptionsAlter
     {
         if (!$this->isOperatorAlterTable()) {
             throw new QueryBuilderException('Error, ALTER TABLE command not found.');
         }
+
+        if (is_string($default_value)) {
+            $default_value = "'$default_value'";
+        }
+
+        $this->query .= ($this->getEndOfOperator() ?? ' ') . 'ALTER COLUMN ' . $field_name . ' SET DEFAULT ' . $default_value;
 
         return $this;
     }
@@ -95,6 +117,8 @@ class MySqlOperatorOptionsAlter implements OperatorOptionsAlter
             throw new QueryBuilderException('Error, ALTER TABLE command not found.');
         }
 
+        $this->query .= ($this->getEndOfOperator() ?? ' ') . 'ADD CONSTRAINT ' . $consrtaint_name . ' ' . $value;
+
         return $this;
     }
 
@@ -106,6 +130,30 @@ class MySqlOperatorOptionsAlter implements OperatorOptionsAlter
         if (!$this->isOperatorAlterTable()) {
             throw new QueryBuilderException('Error, ALTER TABLE command not found.');
         }
+
+        $this->query .= ($this->getEndOfOperator() ?? ' ') . 'DROP ' . $value . ' ' . $consrtaint_name;
+
+        return $this;
+    }
+
+    public function addPrimaryKey(string $field_name): OperatorOptionsAlter
+    {
+        if (!$this->isOperatorAlterTable()) {
+            throw new QueryBuilderException('Error, ALTER TABLE command not found.');
+        }
+
+        $this->query .= ($this->getEndOfOperator() ?? ' ') . 'ADD PRIMARY KEY ' . '(' . $field_name . ')';
+
+        return $this;
+    }
+
+    public function dropPrimaryKey(): OperatorOptionsAlter
+    {
+        if (!$this->isOperatorAlterTable()) {
+            throw new QueryBuilderException('Error, ALTER TABLE command not found.');
+        }
+
+        $this->query .= ($this->getEndOfOperator() ?? ' ') . 'DROP PRIMARY KEY';
 
         return $this;
     }

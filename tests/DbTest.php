@@ -28,6 +28,12 @@ class DbTest extends TestCase
 
     public function setUp(): void
     {
+        if (!extension_loaded('mysqli')) {
+            $this->markTestSkipped(
+                'Расширение MySQLi недоступно.'
+            );
+        }
+
         $this->myDb = new DB(
             new Connector(
                 typeDb: 'mysql',
@@ -116,7 +122,7 @@ class DbTest extends TestCase
                 (new DataMySQLQueryBuilder())
                     ->insert('Customers')
                         ->addValues('Age', '43')
-                        ->addValues('FirstName	', 'Elvii')
+                        ->addValues('FirstName	', 'Elvie')
                         ->addValues('LastName', 'Kozey')
                         ->addValues('NewAddress', 'Monique Tunnel West Providenci')
             )

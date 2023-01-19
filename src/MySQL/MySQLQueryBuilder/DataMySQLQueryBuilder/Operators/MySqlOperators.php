@@ -60,16 +60,6 @@ class MySqlOperators implements Operators
         return strcasecmp($this->command, $command) === 0 ? true : false;
     }
 
-    public function isOperator(string $operator): bool
-    {
-        foreach ($this->operators as $key => $allowedOperator) {
-            if (strcasecmp($allowedOperator, $operator) === 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public function isOperatorWhere(): bool
     {
         if (preg_match('~^.+\s(?<operator>WHERE)\s.+$~iu', $this->query)) {
@@ -138,33 +128,46 @@ class MySqlOperators implements Operators
         throw new QueryBuilderException('Error, incorrect query.');
     }
 
-    public function where(string $value_a, string $operator = "", string $value_b = "", bool $not = false): Operators
+    /**
+     * @throws QueryBuilderException
+     */
+    public function getExpression(string $expression): string
+    {
+        $t = implode("|", $this->operators);
+        $expression = preg_replace('~\s+~iu', '', $expression)
+                        ?? throw new QueryBuilderException('Error, invalid expression.');
+        if (
+            preg_match(
+                '~(?<value_a>[\w\-+*/%():.?]+)(?<operator>' . implode("|", $this->operators) . ')(?<value_b>[\w\-+*/%():.?]+)~iu',
+                $expression,
+                $matches
+            )
+        ) {
+            return $expression;
+        }
+
+        throw new QueryBuilderException('Error, invalid expression.');
+    }
+
+    public function where(string $expression, bool $not = false): Operators
     {
         if (!$this->isCommand('SELECT') && !$this->isCommand('DELETE') && !$this->isCommand('UPDATE')) {
             throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
         }
 
-        if (!$this->isOperator($operator)) {
-            throw new QueryBuilderException('Error, invalid operator.');
-        }
-
-        $this->query .= ' WHERE ' . ($not ? 'NOT ' : '') . $value_a . ' ' . $operator . ' ' . $value_b;
+        $this->query .= ' WHERE ' . ($not ? 'NOT ' : '') . $this->getExpression($expression);
 
         return $this;
     }
 
-    public function and(string $value_a, string $operator = "", string $value_b = "", bool $not = false): Operators
+    public function and(string $expression, bool $not = false): Operators
     {
         if (!$this->isCommand('SELECT') && !$this->isCommand('DELETE') && !$this->isCommand('UPDATE')) {
             throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
         }
 
-        if (!$this->isOperator($operator)) {
-            throw new QueryBuilderException('Error, invalid operator.');
-        }
-
         if ($this->isOperatorWhere()) {
-            $this->query .= ' AND ' . ($not ? 'NOT ' : '') . $value_a . ' ' . $operator . ' ' . $value_b;
+            $this->query .= ' AND ' . ($not ? 'NOT ' : '') . $this->getExpression($expression);
         } else {
             throw new QueryBuilderException('Error, WHERE clause not found. You cannot use AND without WHERE.');
         }
@@ -172,18 +175,14 @@ class MySqlOperators implements Operators
         return $this;
     }
 
-    public function or(string $value_a, string $operator = "", string $value_b = "", bool $not = false): Operators
+    public function or(string $expression, bool $not = false): Operators
     {
         if (!$this->isCommand('SELECT') && !$this->isCommand('DELETE') && !$this->isCommand('UPDATE')) {
             throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
         }
 
-        if (!$this->isOperator($operator)) {
-            throw new QueryBuilderException('Error, invalid operator.');
-        }
-
         if ($this->isOperatorWhere()) {
-            $this->query .= ' OR ' . ($not ? 'NOT ' : '') . $value_a . ' ' . $operator . ' ' . $value_b;
+            $this->query .= ' OR ' . ($not ? 'NOT ' : '') . $this->getExpression($expression);
         } else {
             throw new QueryBuilderException('Error, WHERE clause not found. You cannot use OR without WHERE.');
         }
@@ -383,7 +382,7 @@ class MySqlOperators implements Operators
         return $this;
     }
 
-    public function on(string $value_a, string $operator, string $value_b): Operators
+    public function on(string $expression,): Operators
     {
         if (!$this->isCommand('JOIN')) {
             throw new QueryBuilderException('Error, JOIN operator call expected.');
@@ -391,11 +390,7 @@ class MySqlOperators implements Operators
             $this->command = 'SELECT';
         }
 
-        if (!$this->isOperator($operator)) {
-            throw new QueryBuilderException('Error, invalid operator.');
-        }
-
-        $this->query .= ' ON ' . $value_a . ' ' . $operator . ' ' . $value_b;
+        $this->query .= ' ON ' . $this->getExpression($expression);
 
         return $this;
     }

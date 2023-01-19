@@ -47,7 +47,7 @@ class Connector implements ConnectorInterface
      */
     public function addOption(array $option): Connector
     {
-        $this->options[] = $option;
+        $this->options += $option;
         return $this;
     }
 

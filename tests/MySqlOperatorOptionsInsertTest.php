@@ -153,7 +153,7 @@ class MySqlOperatorOptionsInsertTest extends TestCase
                     'last_name' => ['Volkovskyi', 'Karasev', 'Trunevs'],
                     'age' => ['24', '25', '32'],
                 ],
-                '(name,last_name,age) VALUES (Vadim,Sasha,Oleg), (Volkovskyi,Karasev,Trunevs), (24,25,32);',
+                " (name,last_name,age) VALUES('Vadim','Volkovskyi',24),('Sasha','Karasev',25),('Oleg','Trunevs',32);",
             ],
         ];
     }

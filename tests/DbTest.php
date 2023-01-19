@@ -28,6 +28,12 @@ class DbTest extends TestCase
 
     public function setUp(): void
     {
+        if (!extension_loaded('mysqli')) {
+            $this->markTestSkipped(
+                'Расширение MySQLi недоступно.'
+            );
+        }
+
         $this->myDb = new DB(
             new Connector(
                 typeDb: 'mysql',

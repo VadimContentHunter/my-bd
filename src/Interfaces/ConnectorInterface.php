@@ -17,4 +17,6 @@ interface ConnectorInterface
      * @throws PDOException
      */
     public function connect(): PDO;
+
+    public function getNumConnected(): int;
 }

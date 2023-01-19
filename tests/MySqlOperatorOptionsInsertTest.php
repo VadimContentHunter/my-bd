@@ -51,9 +51,9 @@ class MySqlOperatorOptionsInsertTest extends TestCase
                     'age' => ['24', '25', '32'],
                 ],
                 [
-                    'name' => ['Vadim', 'Sasha', 'Oleg'],
-                    'last_name' => ['Volkovskyi', 'Karasev', 'Trunevs'],
-                    'age' => ['24', '25', '32'],
+                    'name' => ['Oleg'],
+                    'last_name' => ['Trunevs'],
+                    'age' => ['32'],
                 ],
             ],
         ];
@@ -61,7 +61,7 @@ class MySqlOperatorOptionsInsertTest extends TestCase
 
     /**
      * @test
-     * @dataProvider providerAddValues
+     * @dataProvider providerSetValues
      *
      * @param array<string,string[]> $data
      */
@@ -153,44 +153,7 @@ class MySqlOperatorOptionsInsertTest extends TestCase
                     'last_name' => ['Volkovskyi', 'Karasev', 'Trunevs'],
                     'age' => ['24', '25', '32'],
                 ],
-                '(name,last_name,age) VALUES (Vadim,Sasha,Oleg), (Volkovskyi,Karasev,Trunevs), (24,25,32);',
-            ],
-        ];
-    }
-
-    /**
-     * @test
-     * @dataProvider providerGetQueryException
-     * @depends test_addValues_withParameters_shouldAddValuesToParameter
-     *
-     * @param array<string,string[]> $data
-     */
-    public function test_getQuery_usingTheAddValuesMethod_shouldReturnAnException(array $data, \Exception $objException): void
-    {
-        $this->expectException($objException::class);
-
-        foreach ($data as $field => $values) {
-            foreach ($values as $key => $value) {
-                $this->mySqlOperatorOptionsInsertFake->addValues($field, $value);
-            }
-        }
-
-        $this->mySqlOperatorOptionsInsertFake->getQuery();
-    }
-
-    /**
-     * @return array<string,mixed>
-     */
-    public function providerGetQueryException(): array
-    {
-        return [
-            'not a rectangular matrix' => [
-                [
-                    'name' => ['Vadim', 'Sasha', 'Oleg', 'Dima'],
-                    'last_name' => ['Volkovskyi', 'Karasev', 'Trunevs'],
-                    'age' => ['24', '25', '32'],
-                ],
-                new QueryBuilderException(),
+                " (name,last_name,age) VALUES('Oleg','Trunevs',32);",
             ],
         ];
     }

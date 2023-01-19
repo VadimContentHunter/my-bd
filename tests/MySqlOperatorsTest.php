@@ -242,14 +242,19 @@ class MySqlOperatorsTest extends TestCase
      */
     public function test_onAndInnerJoin_withParameters_shouldChangeInternalParameterQuery(): void
     {
-        $expected = "SELECT Orders.CreatedAt,Customers.FirstName,Products.ProductName FROM Orders JOIN Products ON Products.Id = Orders.ProductId JOIN Customers ON Customers.Id = Orders.CustomerId";
+        $expected = "SELECT Orders.CreatedAt,Customers.FirstName,Products.ProductName"
+        . " FROM Orders"
+        . " JOIN Products"
+        . " ON Products.Id=Orders.ProductId"
+        . " JOIN Customers"
+        . " ON Customers.Id=Orders.CustomerId";
         $query = 'SELECT CreatedAt, Customers.FirstName, Products.ProductName FROM Orders';
 
         $this->mySqlOperatorsFake->setQuery($query);
         $this->mySqlOperatorsFake->innerJoin('Products')
-            ->on('Products.Id', '=', 'Orders.ProductId')
+            ->on('Products.Id = Orders.ProductId')
             ->innerJoin('Customers')
-            ->on('Customers.Id', '=', 'Orders.CustomerId');
+            ->on('Customers.Id = Orders.CustomerId');
 
         $this->assertEquals($expected, $this->mySqlOperatorsFake->getQueryFake());
     }
@@ -260,14 +265,19 @@ class MySqlOperatorsTest extends TestCase
      */
     public function test_onAndLeftJoin_withParameters_shouldChangeInternalParameterQuery(): void
     {
-        $expected = "SELECT Orders.CreatedAt,Customers.FirstName,Products.ProductName FROM Orders LEFT JOIN Products ON Products.Id = Orders.ProductId LEFT JOIN Customers ON Customers.Id = Orders.CustomerId";
+        $expected = "SELECT Orders.CreatedAt,Customers.FirstName,Products.ProductName"
+        . " FROM Orders"
+        . " LEFT JOIN Products"
+        . " ON Products.Id=Orders.ProductId"
+        . " LEFT JOIN Customers"
+        . " ON Customers.Id=Orders.CustomerId";
         $query = 'SELECT CreatedAt, Customers.FirstName, Products.ProductName FROM Orders';
 
         $this->mySqlOperatorsFake->setQuery($query);
         $this->mySqlOperatorsFake->leftJoin('Products')
-            ->on('Products.Id', '=', 'Orders.ProductId')
+            ->on('Products.Id = Orders.ProductId')
             ->leftJoin('Customers')
-            ->on('Customers.Id', '=', 'Orders.CustomerId');
+            ->on('Customers.Id = Orders.CustomerId');
 
         $this->assertEquals($expected, $this->mySqlOperatorsFake->getQueryFake());
     }
@@ -278,14 +288,19 @@ class MySqlOperatorsTest extends TestCase
      */
     public function test_onAndRightJoin_withParameters_shouldChangeInternalParameterQuery(): void
     {
-        $expected = "SELECT Orders.CreatedAt,Customers.FirstName,Products.ProductName FROM Orders RIGHT JOIN Products ON Products.Id = Orders.ProductId RIGHT JOIN Customers ON Customers.Id = Orders.CustomerId";
+        $expected = "SELECT Orders.CreatedAt,Customers.FirstName,Products.ProductName"
+        . " FROM Orders"
+        . " RIGHT JOIN Products"
+        . " ON Products.Id=Orders.ProductId"
+        . " RIGHT JOIN Customers"
+        . " ON Customers.Id=Orders.CustomerId";
         $query = 'SELECT CreatedAt, Customers.FirstName, Products.ProductName FROM Orders';
 
         $this->mySqlOperatorsFake->setQuery($query);
         $this->mySqlOperatorsFake->rightJoin('Products')
-            ->on('Products.Id', '=', 'Orders.ProductId')
+            ->on('Products.Id = Orders.ProductId')
             ->rightJoin('Customers')
-            ->on('Customers.Id', '=', 'Orders.CustomerId');
+            ->on('Customers.Id = Orders.CustomerId');
 
         $this->assertEquals($expected, $this->mySqlOperatorsFake->getQueryFake());
     }

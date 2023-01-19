@@ -59,6 +59,10 @@ class SingleRequest implements Request
 
     public function send(): mixed
     {
+        if ($this->databaseHost === null) {
+            throw new MyDbException("Error, you need to connect to the database");
+        }
+
         $sth = $this->databaseHost->prepare($this->query);
         $sth->execute($this->parameters);
 

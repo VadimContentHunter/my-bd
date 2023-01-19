@@ -20,7 +20,7 @@ class Connector implements ConnectorInterface
     protected ?PDO $dataBaseHost = null;
 
     /**
-     * @param null|array<string,mixed> $options
+     * @param null|array<mixed> $options
      */
     public function __construct(
         public ?string $dsn = null,

@@ -28,6 +28,10 @@ class DbTest extends TestCase
 
     public function setUp(): void
     {
+        $this->markTestSkipped(
+            'Пропущен тест, в котором есть работа с базой данных.'
+        );
+
         $this->myDb = new DB(
             new Connector(
                 typeDb: 'mysql',

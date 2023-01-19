@@ -45,7 +45,7 @@ class MySqlOperatorOptionsUpdate implements OperatorOptionsUpdate
 
     public function getOperators(): Operators
     {
-        $this->query = $this->getFieldsValuesSQL();
+        $this->query .= $this->getFieldsValuesSQL();
 
         $operators = new MySqlOperators();
         $operators->setQuery($this->query);

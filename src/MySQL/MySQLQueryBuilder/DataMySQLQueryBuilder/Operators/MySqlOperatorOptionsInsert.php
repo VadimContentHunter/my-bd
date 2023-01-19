@@ -17,15 +17,15 @@ class MySqlOperatorOptionsInsert implements OperatorOptionsInsert
     protected string $query = '';
 
     /**
-     * @var array<string,string[]>
+     * @var array<string,array<string|int>>
      */
     protected array $fieldNames = [];
 
-    public function addValues(string $field_name, string $value): OperatorOptionsInsert
+    public function addValues(string $field_name, string|int $value): OperatorOptionsInsert
     {
         foreach ($this->fieldNames as $name => &$field_value) {
             if (strcmp($name, $field_name) === 0) {
-                $field_value[] = $value;
+                $field_value = [$value];
                 return $this;
             }
         }
@@ -59,7 +59,7 @@ class MySqlOperatorOptionsInsert implements OperatorOptionsInsert
 
     public function getQuery(): string
     {
-        return $this->getFieldNamesSQL() . ' ' . $this->getValuesSQL();
+        return $this->query . ' ' . $this->getFieldNamesSQL() . ' ' . $this->getValuesSQL() . ';';
     }
 
     /**
@@ -71,17 +71,21 @@ class MySqlOperatorOptionsInsert implements OperatorOptionsInsert
             throw new QueryBuilderException("Incorrect value");
         }
 
-        $query = 'VALUES';
-
-        foreach ($this->fieldNames as $row_num => $row) {
-            $query .= ' (';
-            foreach ($row as $key => $value) {
-                $query .= $value . ',';
+        $queryValues = [];
+        foreach ($this->fieldNames as $name => $values) {
+            foreach ($values as $key => $value) {
+                $queryValues[$key] = $queryValues[$key] ?? '';
+                $queryValues[$key] .= (is_numeric($value) ? $value : "'$value'") . ',';
             }
-            $query = substr($query, 0, -1) . '),';  // удаляется лишняя запятая
         }
 
-        return substr($query, 0, -1) . ';'; // удаляется лишняя запятая
+        $query = 'VALUES';
+        foreach ($queryValues as $key => $value) {
+            // удаляется лишняя запятая и возвращается результат
+            $query .= '(' . substr($value, 0, -1) . '),';
+        }
+
+        return substr($query, 0, -1);        // удаляется лишняя запятая
     }
 
     /**

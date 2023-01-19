@@ -140,7 +140,7 @@ class MySqlOperators implements Operators
 
     public function where(string $value_a, string $operator = "", string $value_b = "", bool $not = false): Operators
     {
-        if (!$this->isCommand('SELECT')) {
+        if (!$this->isCommand('SELECT') && !$this->isCommand('DELETE') && !$this->isCommand('UPDATE')) {
             throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
         }
 
@@ -155,7 +155,7 @@ class MySqlOperators implements Operators
 
     public function and(string $value_a, string $operator = "", string $value_b = "", bool $not = false): Operators
     {
-        if (!$this->isCommand('SELECT')) {
+        if (!$this->isCommand('SELECT') && !$this->isCommand('DELETE') && !$this->isCommand('UPDATE')) {
             throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
         }
 
@@ -174,7 +174,7 @@ class MySqlOperators implements Operators
 
     public function or(string $value_a, string $operator = "", string $value_b = "", bool $not = false): Operators
     {
-        if (!$this->isCommand('SELECT')) {
+        if (!$this->isCommand('SELECT') && !$this->isCommand('DELETE') && !$this->isCommand('UPDATE')) {
             throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
         }
 
@@ -197,7 +197,7 @@ class MySqlOperators implements Operators
      */
     public function in(array|string $value, bool $not = false): Operators
     {
-        if (!$this->isCommand('SELECT')) {
+        if (!$this->isCommand('SELECT') && !$this->isCommand('DELETE') && !$this->isCommand('UPDATE')) {
             throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
         }
 
@@ -225,7 +225,7 @@ class MySqlOperators implements Operators
 
     public function between(string $value_a, string $value_b, bool $not = false): Operators
     {
-        if (!$this->isCommand('SELECT')) {
+        if (!$this->isCommand('SELECT') && !$this->isCommand('DELETE') && !$this->isCommand('UPDATE')) {
             throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
         }
 
@@ -239,7 +239,7 @@ class MySqlOperators implements Operators
 
     public function like(string $template, bool $not = false): Operators
     {
-        if (!$this->isCommand('SELECT')) {
+        if (!$this->isCommand('SELECT') && !$this->isCommand('DELETE') && !$this->isCommand('UPDATE')) {
             throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
         }
 
@@ -257,7 +257,7 @@ class MySqlOperators implements Operators
 
     public function regex(string $template, bool $not = false): Operators
     {
-        if (!$this->isCommand('SELECT')) {
+        if (!$this->isCommand('SELECT') && !$this->isCommand('DELETE') && !$this->isCommand('UPDATE')) {
             throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
         }
 
@@ -275,7 +275,7 @@ class MySqlOperators implements Operators
 
     public function orderByDesc(string $field_name): Operators
     {
-        if (!$this->isCommand('SELECT')) {
+        if (!$this->isCommand('SELECT') && !$this->isCommand('DELETE') && !$this->isCommand('UPDATE')) {
             throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
         }
 
@@ -295,7 +295,7 @@ class MySqlOperators implements Operators
 
     public function orderByAsc(string $field_name): Operators
     {
-        if (!$this->isCommand('SELECT')) {
+        if (!$this->isCommand('SELECT') && !$this->isCommand('DELETE') && !$this->isCommand('UPDATE')) {
             throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command.');
         }
 
@@ -315,7 +315,7 @@ class MySqlOperators implements Operators
 
     public function limit(int $row_count, int $offset = 0): Operators
     {
-        if (!$this->isCommand('SELECT')) {
+        if (!$this->isCommand('SELECT') && !$this->isCommand('DELETE') && !$this->isCommand('UPDATE')) {
             throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command.');
         }
 
@@ -338,7 +338,7 @@ class MySqlOperators implements Operators
             throw new QueryBuilderException('Error, JOIN operator already exists, ON operator is expected to be called.');
         }
 
-        if (!$this->isCommand('SELECT')) {
+        if (!$this->isCommand('SELECT') && !$this->isCommand('DELETE') && !$this->isCommand('UPDATE')) {
             throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command.');
         }
 
@@ -355,7 +355,7 @@ class MySqlOperators implements Operators
             throw new QueryBuilderException('Error, JOIN operator already exists, ON operator is expected to be called.');
         }
 
-        if (!$this->isCommand('SELECT')) {
+        if (!$this->isCommand('SELECT') && !$this->isCommand('DELETE') && !$this->isCommand('UPDATE')) {
             throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command.');
         }
 
@@ -372,7 +372,7 @@ class MySqlOperators implements Operators
             throw new QueryBuilderException('Error, JOIN operator already exists, ON operator is expected to be called.');
         }
 
-        if (!$this->isCommand('SELECT')) {
+        if (!$this->isCommand('SELECT') && !$this->isCommand('DELETE') && !$this->isCommand('UPDATE')) {
             throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command.');
         }
 
@@ -402,7 +402,7 @@ class MySqlOperators implements Operators
 
     public function isNull(bool $not = false): Operators
     {
-        if (!$this->isCommand('SELECT')) {
+        if (!$this->isCommand('SELECT') && !$this->isCommand('DELETE') && !$this->isCommand('UPDATE')) {
             throw new QueryBuilderException('Error An invalid command was specified. Should be a SELECT command');
         }
 

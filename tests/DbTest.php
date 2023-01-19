@@ -116,7 +116,7 @@ class DbTest extends TestCase
                 (new DataMySQLQueryBuilder())
                     ->insert('Customers')
                         ->addValues('Age', '43')
-                        ->addValues('FirstName	', 'Elvie')
+                        ->addValues('FirstName	', 'Elvii')
                         ->addValues('LastName', 'Kozey')
                         ->addValues('NewAddress', 'Monique Tunnel West Providenci')
             )

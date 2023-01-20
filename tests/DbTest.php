@@ -28,9 +28,9 @@ class DbTest extends TestCase
 
     public function setUp(): void
     {
-        // $this->markTestSkipped(
-        //     'Пропуск теста из за отсутствия базы данных в удаленном окружении.'
-        // );
+        $this->markTestSkipped(
+            'Пропуск теста из за отсутствия базы данных в удаленном окружении.'
+        );
 
         $this->myDb = new DB(
             new Connector(

@@ -15,6 +15,10 @@ use vadimcontenthunter\MyDB\Requests\TransactionalRequests;
  */
 class DB
 {
+    protected ?TransactionalRequests $objTransactionalRequests = null;
+
+    protected ?SingleRequest $objSingleRequest = null;
+
     public function __construct(
         public ConnectorInterface $connector
     ) {
@@ -22,11 +26,12 @@ class DB
 
     public function transactionalRequests(): TransactionalRequests&Request
     {
-        return new TransactionalRequests($this->connector);
+
+        return $this->objTransactionalRequests ?? ($this->objTransactionalRequests = new TransactionalRequests($this->connector));
     }
 
     public function singleRequest(): SingleRequest&Request
     {
-        return new SingleRequest($this->connector);
+        return $this->objSingleRequest ?? ($this->objSingleRequest = new SingleRequest($this->connector));
     }
 }

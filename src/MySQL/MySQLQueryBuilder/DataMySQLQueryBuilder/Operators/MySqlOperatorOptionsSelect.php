@@ -38,7 +38,7 @@ class MySqlOperatorOptionsSelect implements OperatorOptionsSelect
 
     public function from(string $table_name): Operators
     {
-        $this->query . ' ' . $this->getFieldNamesSQL() . ' FROM ' . $table_name;
+        $this->query .= ' ' . implode(",", $this->fieldNames) . ' FROM ' . $table_name;
 
         $operators = new MySqlOperators();
         $operators->setQuery($this->query);
@@ -71,21 +71,5 @@ class MySqlOperatorOptionsSelect implements OperatorOptionsSelect
     {
         $this->query = preg_replace('~SELECT~ui', 'SELECT DISTINCT', $this->query) ?? '';
         return $this;
-    }
-
-    /**
-     * @throws QueryBuilderException
-     */
-    protected function getFieldNamesSQL(): string
-    {
-        $query = '';
-        foreach ($this->fieldNames as $field_name => $value) {
-            if (!is_string($field_name)) {
-                throw new QueryBuilderException("Column name is not a string");
-            }
-
-            $query .= $field_name . ',';
-        }
-        return substr($query, 0, -1);
     }
 }

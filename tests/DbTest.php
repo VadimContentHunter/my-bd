@@ -28,22 +28,22 @@ class DbTest extends TestCase
 
     public function setUp(): void
     {
-        $this->markTestSkipped(
-            'Пропуск теста из за отсутствия базы данных в удаленном окружении.'
-        );
+        // $this->markTestSkipped(
+        //     'Пропуск теста из за отсутствия базы данных в удаленном окружении.'
+        // );
 
-        $this->myDb = new DB(
-            new Connector(
-                typeDb: 'mysql',
-                host: 'localhost',
-                dbName: 'productsdb',
-                user: 'mytest',
-                password: 'mytest',
-                options: [
+        DB::$connector = new Connector(
+            typeDb: 'mysql',
+            host: 'localhost',
+            dbName: 'productsdb',
+            user: 'mytest',
+            password: 'mytest',
+            options: [
                     PDO::ATTR_PERSISTENT => true
                 ]
-            )
         );
+
+        $this->myDb = new DB();
     }
 
     /** @test */
@@ -142,7 +142,7 @@ class DbTest extends TestCase
             )
             ->send();
 
-        $this->assertEquals(1, $this->myDb->connector->getNumConnected());
+        $this->assertEquals(1, $this->myDb->connector->getTotalConnected());
     }
 
     /** @test */

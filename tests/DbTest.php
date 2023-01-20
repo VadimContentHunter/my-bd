@@ -28,9 +28,9 @@ class DbTest extends TestCase
 
     public function setUp(): void
     {
-        $this->markTestSkipped(
-            'Пропуск теста из за отсутствия базы данных в удаленном окружении.'
-        );
+        // $this->markTestSkipped(
+        //     'Пропуск теста из за отсутствия базы данных в удаленном окружении.'
+        // );
 
         $this->myDb = new DB(
             new Connector(
@@ -50,11 +50,11 @@ class DbTest extends TestCase
     public function test_singleRequest_clearTableData_shouldClearAllDataInTheDatabase(): void
     {
         $this->myDb->singleRequest()
-                        ->singleQuery(
-                            (new TableMySQLQueryBuilder())
-                                ->truncate('Customers')
-                        )
-                        ->send();
+            ->singleQuery(
+                (new TableMySQLQueryBuilder())
+                    ->truncate('Customers')
+            )
+            ->send();
         $this->assertTrue(true);
     }
 
@@ -62,11 +62,11 @@ class DbTest extends TestCase
     public function test_singleRequest_dropTable_shouldDropTheTable(): void
     {
         $this->myDb->singleRequest()
-                        ->singleQuery(
-                            (new TableMySQLQueryBuilder())
-                                ->drop('Customers')
-                        )
-                        ->send();
+            ->singleQuery(
+                (new TableMySQLQueryBuilder())
+                    ->drop('Customers')
+            )
+            ->send();
 
         $this->assertTrue(true);
     }
@@ -75,24 +75,24 @@ class DbTest extends TestCase
     public function test_singleRequest_createTable_shouldCreateTheTable(): void
     {
         $this->myDb->singleRequest()
-                        ->singleQuery(
-                            (new TableMySQLQueryBuilder())
-                                ->create('Customers')
-                                    ->addField('Id', FieldDataType::INT, [
-                                        FieldAttributes::AUTO_INCREMENT,
-                                        FieldAttributes::PRIMARY_KEY,
-                                        FieldAttributes::NOT_NULL
-                                    ])
-                                    ->addField('Age', FieldDataType::INT, [
-                                        FieldAttributes::NULL
-                                    ])
-                                    ->addField('FirstName', FieldDataType::TEXT)
-                                    ->addField('LastName', FieldDataType::TEXT)
-                                    ->addField('NewAddress', FieldDataType::TEXT, [
-                                        FieldAttributes::NULL
-                                    ])
-                        )
-                        ->send();
+            ->singleQuery(
+                (new TableMySQLQueryBuilder())
+                    ->create('Customers')
+                        ->addField('Id', FieldDataType::INT, [
+                            FieldAttributes::AUTO_INCREMENT,
+                            FieldAttributes::PRIMARY_KEY,
+                            FieldAttributes::NOT_NULL
+                        ])
+                        ->addField('Age', FieldDataType::INT, [
+                            FieldAttributes::NULL
+                        ])
+                        ->addField('FirstName', FieldDataType::TEXT)
+                        ->addField('LastName', FieldDataType::TEXT)
+                        ->addField('NewAddress', FieldDataType::TEXT, [
+                            FieldAttributes::NULL
+                        ])
+            )
+            ->send();
 
         $this->assertTrue(true);
     }
@@ -101,13 +101,13 @@ class DbTest extends TestCase
     public function test_singleRequest_alterTable_shouldEditTheTable(): void
     {
         $this->myDb->singleRequest()
-                        ->singleQuery(
-                            (new TableMySQLQueryBuilder())
-                                ->alter('Customers')
-                                    ->modifyColumn('FirstName', FieldDataType::getTypeVarchar(50))
-                                    ->modifyColumn('LastName', FieldDataType::getTypeVarchar(50))
-                        )
-                        ->send();
+            ->singleQuery(
+                (new TableMySQLQueryBuilder())
+                    ->alter('Customers')
+                        ->modifyColumn('FirstName', FieldDataType::getTypeVarchar(50))
+                        ->modifyColumn('LastName', FieldDataType::getTypeVarchar(50))
+            )
+            ->send();
 
         $this->assertTrue(true);
     }
@@ -193,5 +193,44 @@ class DbTest extends TestCase
             ->send();
 
         $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function test_transactionalRequests_innerData_shouldAddNewDataInTheDatabase(): void
+    {
+        $this->myDb->transactionalRequests()
+            ->addQuery(
+                (new DataMySQLQueryBuilder())
+                    ->insert('Customers')
+                        ->setValues([
+                            'Age' => ['28','31'],
+                            'FirstName' => ['Mathew','Кристина'],
+                            'LastName' => ['Stroman','Миронова'],
+                            'NewAddress' => [
+                                'Hyatt Causeway Mooremouth',
+                                'Брянская область, город Ногинск'
+                            ]
+                        ])
+            );
+
+        $this->myDb->transactionalRequests()
+            ->addQuery(
+                (new DataMySQLQueryBuilder())
+                        ->delete('Customers')
+                            ->where('Id = 1')
+                            ->or('Id = 2')
+            )
+            ->addQuery(
+                (new DataMySQLQueryBuilder())
+                    ->insert('Customers')
+                        ->addValues('Age', '43')
+                        ->addValues('FirstName   ', 'Elvie')
+                        ->addValues('LastName', 'Kozey')
+                        ->addValues('NewAddress', 'Monique Tunnel West Providenci')
+            );
+
+        $res2 = $this->myDb->transactionalRequests()->send();
+
+        $this->assertEquals(1, $this->myDb->connector->getNumConnected());
     }
 }

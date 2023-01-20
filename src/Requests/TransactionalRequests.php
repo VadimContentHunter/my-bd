@@ -54,6 +54,7 @@ class TransactionalRequests implements Request
 
     /**
      * @throws MyDbException
+     * @return array<mixed>
      */
     public function send(): array
     {

@@ -43,6 +43,12 @@ class DatabaseMySQLQueryBuilder implements DatabaseSQLQueryBuilder
         return $this;
     }
 
+    public function isTable(string $database_name, string $table_name): DatabaseSQLQueryBuilder
+    {
+        $this->query = "SHOW TABLES FROM $database_name like '$table_name';";
+        return $this;
+    }
+
     public function setQuery(string $query): SQLQueryBuilder
     {
         $this->query = $query;

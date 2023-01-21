@@ -160,14 +160,14 @@ class DbTest extends TestCase
     /** @test */
     public function test_singleRequest_showTable_shouldDropTheTable(): void
     {
-        $tables = $this->myDb->singleRequest()
+        $res = $this->myDb->singleRequest()
             ->singleQuery(
-                (new TableMySQLQueryBuilder())
-                    ->setQuery("SHOW TABLES FROM productsdb like 'Customers';")
+                (new DatabaseMySQLQueryBuilder())
+                    ->isTable('productsdb', 'Customers')
             )
-            ->send();
+            ->send()[0][0] ?? '';
 
-        if ($tables[0] ?? '' !== 'Customers') {
+        if ($res !== 'Customers') {
             $this->myDb->singleRequest()
                 ->singleQuery(
                     (new TableMySQLQueryBuilder())

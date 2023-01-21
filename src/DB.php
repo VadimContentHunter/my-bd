@@ -6,6 +6,7 @@ namespace vadimcontenthunter\MyDB;
 
 use vadimcontenthunter\MyDB\Interfaces\Request;
 use vadimcontenthunter\MyDB\Requests\SingleRequest;
+use vadimcontenthunter\MyDB\Exceptions\ConnectException;
 use vadimcontenthunter\MyDB\Interfaces\ConnectorInterface;
 use vadimcontenthunter\MyDB\Requests\TransactionalRequests;
 
@@ -15,23 +16,23 @@ use vadimcontenthunter\MyDB\Requests\TransactionalRequests;
  */
 class DB
 {
+    public static ?ConnectorInterface $connector = null;
+
     protected ?TransactionalRequests $objTransactionalRequests = null;
 
     protected ?SingleRequest $objSingleRequest = null;
 
-    public function __construct(
-        public ConnectorInterface $connector
-    ) {
-    }
-
     public function transactionalRequests(): TransactionalRequests&Request
     {
-
-        return $this->objTransactionalRequests ?? ($this->objTransactionalRequests = new TransactionalRequests($this->connector));
+        return $this->objTransactionalRequests ?? $this->objTransactionalRequests = new TransactionalRequests(
+            self::$connector ?? throw new ConnectException("Error, connector is null.")
+        );
     }
 
     public function singleRequest(): SingleRequest&Request
     {
-        return $this->objSingleRequest ?? ($this->objSingleRequest = new SingleRequest($this->connector));
+        return $this->objSingleRequest ?? $this->objSingleRequest = new SingleRequest(
+            self::$connector ?? throw new ConnectException("Error, connector is null.")
+        );
     }
 }

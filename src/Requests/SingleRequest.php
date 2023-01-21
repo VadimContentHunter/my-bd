@@ -39,9 +39,18 @@ class SingleRequest implements Request
         return $this;
     }
 
-    public function setParameters(string $parameter_name, string|int $parameter_value): SingleRequest
+    public function addParameter(string $parameter_name, string|int $parameter_value): SingleRequest
     {
         $this->parameters += [$parameter_name => $parameter_value];
+        return $this;
+    }
+
+    /**
+     * @param array<string, string|int> $parameters
+     */
+    public function setParameters(array $parameters): SingleRequest
+    {
+        $this->parameters = $parameters;
         return $this;
     }
 
@@ -65,6 +74,7 @@ class SingleRequest implements Request
 
         $sth = $this->databaseHost->prepare($this->query);
         $sth->execute($this->parameters);
+        $this->parameters = [];
 
         if ($this->className === null) {
             return $sth->fetchAll();

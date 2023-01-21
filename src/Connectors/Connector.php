@@ -15,7 +15,8 @@ use vadimcontenthunter\MyDB\Interfaces\ConnectorInterface;
  */
 class Connector implements ConnectorInterface
 {
-    public int $numConnected = 0;
+    public static int $totalConnected = 0;
+    protected int $numConnected = 0;
 
     protected ?PDO $dataBaseHost = null;
 
@@ -53,7 +54,12 @@ class Connector implements ConnectorInterface
 
     public function getNumConnected(): int
     {
-        return  $this->numConnected;
+        return $this->numConnected;
+    }
+
+    public function getTotalConnected(): int
+    {
+        return self::$totalConnected;
     }
 
     /**
@@ -70,17 +76,24 @@ class Connector implements ConnectorInterface
         if (
             $this->typeDb !== null
             && $this->host !== null
-            && $this->dbName !== null
         ) {
-            $port = $this->port !== null ? $this->port . ';' : '';
-            $defaultDsn .= $this->typeDb . ':host=' . $this->host . ';' . $port . 'dbname=' . $this->dbName;
+            $port = $this->port !== null ? 'port=' . $this->port . ';' : '';
+            $db_name = $this->dbName !== null ? 'dbname=' . $this->dbName . ';' : '';
+            $defaultDsn .= $this->typeDb . ':host=' . $this->host . ';' . $port . $db_name;
         }
         $this->dsn = $this->dsn ?? ($defaultDsn ?? throw new ConnectException("Error, not enough data to connect."));
 
         $this->dataBaseHost = new PDO($this->dsn, $this->user, $this->password, $this->getOptions());
 
         $this->numConnected++;
+        self::$totalConnected++;
 
         return $this->dataBaseHost;
+    }
+
+    public function resetTotalConnected(): ConnectorInterface
+    {
+        self::$totalConnected = 0;
+        return $this;
     }
 }

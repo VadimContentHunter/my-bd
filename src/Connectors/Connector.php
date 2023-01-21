@@ -76,10 +76,10 @@ class Connector implements ConnectorInterface
         if (
             $this->typeDb !== null
             && $this->host !== null
-            && $this->dbName !== null
         ) {
-            $port = $this->port !== null ? $this->port . ';' : '';
-            $defaultDsn .= $this->typeDb . ':host=' . $this->host . ';' . $port . 'dbname=' . $this->dbName;
+            $port = $this->port !== null ? 'port=' . $this->port . ';' : '';
+            $db_name = $this->dbName !== null ? 'dbname=' . $this->dbName . ';' : '';
+            $defaultDsn .= $this->typeDb . ':host=' . $this->host . ';' . $port . $db_name;
         }
         $this->dsn = $this->dsn ?? ($defaultDsn ?? throw new ConnectException("Error, not enough data to connect."));
 

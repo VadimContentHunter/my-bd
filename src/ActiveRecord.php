@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace vadimcontenthunter\MyDB;
 
+use vadimcontenthunter\MyDB\DB;
 use vadimcontenthunter\MyDB\MySQL\MySQLQueryBuilder\DataMySQLQueryBuilder\DataMySQLQueryBuilder;
 
 /**
@@ -16,7 +17,7 @@ abstract class ActiveRecord
 
     public static function getById(int $id): ?self
     {
-        $db = new Db();
+        $db = new DB();
         $objects = $db->singleRequest()
             ->singleQuery(
                 (new DataMySQLQueryBuilder())
@@ -26,7 +27,7 @@ abstract class ActiveRecord
                             ->where('id=:id')
             )
             ->setClassName(static::class)
-            ->addParameters(':id', $id)
+            ->addParameter(':id', $id)
             ->send();
         return $objects ? $objects[0] : null;
     }

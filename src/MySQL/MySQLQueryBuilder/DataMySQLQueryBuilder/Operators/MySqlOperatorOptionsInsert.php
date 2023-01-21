@@ -21,7 +21,7 @@ class MySqlOperatorOptionsInsert implements OperatorOptionsInsert
      */
     protected array $fieldNames = [];
 
-    public function addValues(string $field_name, string|int $value): OperatorOptionsInsert
+    public function addValue(string $field_name, string|int $value): OperatorOptionsInsert
     {
         foreach ($this->fieldNames as $name => &$field_value) {
             if (strcmp($name, $field_name) === 0) {
@@ -74,8 +74,9 @@ class MySqlOperatorOptionsInsert implements OperatorOptionsInsert
         $queryValues = [];
         foreach ($this->fieldNames as $name => $values) {
             foreach ($values as $key => $value) {
-                $queryValues[$key] = $queryValues[$key] ?? '';
-                $queryValues[$key] .= (is_numeric($value) ? $value : "'$value'") . ',';
+                $queryValues[$key] ??= '';
+                $value = preg_match('~^:[^:\s].+$~iu', $value) ? $value : "'$value'";
+                $queryValues[$key] .= (is_numeric($value) ? $value : $value) . ',';
             }
         }
 

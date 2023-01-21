@@ -92,6 +92,8 @@ class TransactionalRequests implements Request
         }
 
         try {
+            $this->databaseHost->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
             $result = [];
 
             foreach ($this->queries as $i => $storage) {

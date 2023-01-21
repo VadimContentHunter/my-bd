@@ -19,4 +19,8 @@ interface ConnectorInterface
     public function connect(): PDO;
 
     public function getNumConnected(): int;
+
+    public function getTotalConnected(): int;
+
+    public function resetTotalConnected(): ConnectorInterface;
 }

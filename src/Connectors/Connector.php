@@ -15,8 +15,8 @@ use vadimcontenthunter\MyDB\Interfaces\ConnectorInterface;
  */
 class Connector implements ConnectorInterface
 {
-    public int $totalConnected = 0;
-    public int $numConnected = 0;
+    public static int $totalConnected = 0;
+    protected int $numConnected = 0;
 
     protected ?PDO $dataBaseHost = null;
 
@@ -59,7 +59,7 @@ class Connector implements ConnectorInterface
 
     public function getTotalConnected(): int
     {
-        return $this->totalConnected;
+        return self::$totalConnected;
     }
 
     /**
@@ -86,8 +86,14 @@ class Connector implements ConnectorInterface
         $this->dataBaseHost = new PDO($this->dsn, $this->user, $this->password, $this->getOptions());
 
         $this->numConnected++;
-        $this->totalConnected++;
+        self::$totalConnected++;
 
         return $this->dataBaseHost;
+    }
+
+    public function resetTotalConnected(): ConnectorInterface
+    {
+        self::$totalConnected = 0;
+        return $this;
     }
 }

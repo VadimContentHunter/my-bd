@@ -29,13 +29,24 @@ class TransactionalRequests implements Request
      */
     protected array $queries = [];
 
+    /**
+     * @var mixed[]
+     */
+    protected array $resultStore = [];
+
     protected ?PDO $databaseHost = null;
 
     public function __construct(
         protected ConnectorInterface $connector
     ) {
         $this->databaseHost = $connector->connect();
+        $this->beginTransaction();
+    }
+
+    public function beginTransaction(): TransactionalRequests
+    {
         $this->databaseHost->beginTransaction() ?: throw new MyDbException('Error, unable to start transaction');
+        return $this;
     }
 
     /**
@@ -47,6 +58,7 @@ class TransactionalRequests implements Request
         $storage->query = $query_builder->getQuery();
         $storage->parameters = $this->getFormattedParameters($parameters);
         $storage->className = $class_name;
+        $storage->result = null;
 
         $this->queries[] = $storage;
         return $this;
@@ -75,6 +87,10 @@ class TransactionalRequests implements Request
             throw new MyDbException("Error, you need to connect to the database");
         }
 
+        if (!$this->databaseHost->inTransaction()) {
+            $this->beginTransaction();
+        }
+
         try {
             $result = [];
 
@@ -88,7 +104,10 @@ class TransactionalRequests implements Request
                     }
                 }
 
-                $result[] = $storage->className === null ? $sth->fetchAll() : $sth->fetchAll(PDO::FETCH_CLASS, $storage->className);
+                $data = $storage->className === null ? $sth->fetchAll() : $sth->fetchAll(PDO::FETCH_CLASS, $storage->className);
+                $result[] = $data;
+                $storage->result = $data;
+                $this->resultStore[] = $storage;
             }
 
             $this->databaseHost->commit() ?: throw new MyDbException('Error, unable to commit');
@@ -98,5 +117,35 @@ class TransactionalRequests implements Request
             $this->databaseHost->rollBack() ?: throw new MyDbException('Error, transaction cannot be rolled back');
             throw new MyDbException($e->getMessage(), $e->getCode(), $e->getPrevious());
         }
+    }
+
+    /**
+     * @uses TransactionalRequests::send() для записи результатов в поле $this->resultStore
+     *
+     * @return array<mixed>|null Возвращает первый найденный элемент иначе null
+     */
+    public function sendWithControlResultByQuery(string $searchByQuery): array|null
+    {
+        $this->send();
+
+        foreach ($this->resultStore as $index => $storage) {
+            if (strcmp($storage->query, $searchByQuery) === 0) {
+                return $storage->result;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @uses TransactionalRequests::send() для записи результатов в поле $this->resultStore
+     *
+     * @return array<mixed>|null Возвращает первый найденный элемент иначе null
+     */
+    public function sendWithControlResultByIndex(int $index): array|null
+    {
+        $this->send();
+
+        return $this->resultStore[$index]->result ?? null;
     }
 }

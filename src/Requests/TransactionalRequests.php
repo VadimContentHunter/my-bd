@@ -39,17 +39,30 @@ class TransactionalRequests implements Request
     }
 
     /**
-     * @param array<array<string,mixed>> $parameters
+     * @param array<array<string,mixed[]>> $parameters
      */
     public function addQuery(SQLQueryBuilder $query_builder, ?string $class_name = null, array $parameters = []): TransactionalRequests
     {
         $storage = new stdClass();
         $storage->query = $query_builder->getQuery();
-        $storage->parameters = $parameters;
+        $storage->parameters = $this->getFormattedParameters($parameters);
         $storage->className = $class_name;
 
         $this->queries[] = $storage;
         return $this;
+    }
+
+    protected function getFormattedParameters(array $parameters): array
+    {
+        $queryValues = [];
+        foreach ($parameters as $name => $values) {
+            foreach ($values as $key => $value) {
+                $queryValues[$key] ??= [];
+                $queryValues[$key] += [$name => $value];
+            }
+        }
+
+        return $queryValues;
     }
 
     /**
@@ -70,8 +83,8 @@ class TransactionalRequests implements Request
                 if (count($storage->parameters) === 0) {
                     $sth->execute();
                 } else {
-                    foreach ($storage->parameters as $j => $parameter) {
-                        $sth->execute($parameter);
+                    foreach ($storage->parameters as $j => $parameters) {
+                        $sth->execute($parameters);
                     }
                 }
 

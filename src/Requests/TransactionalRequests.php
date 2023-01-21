@@ -45,7 +45,7 @@ class TransactionalRequests implements Request
 
     public function beginTransaction(): TransactionalRequests
     {
-        $this->databaseHost->beginTransaction() ?: throw new MyDbException('Error, unable to start transaction');
+        $this->databaseHost?->beginTransaction() ?: throw new MyDbException('Error, unable to start transaction');
         return $this;
     }
 
@@ -64,6 +64,10 @@ class TransactionalRequests implements Request
         return $this;
     }
 
+    /**
+     * @param  array<array<string,mixed[]>> $parameters
+     * @return array<array<string,mixed[]>>
+     */
     protected function getFormattedParameters(array $parameters): array
     {
         $queryValues = [];

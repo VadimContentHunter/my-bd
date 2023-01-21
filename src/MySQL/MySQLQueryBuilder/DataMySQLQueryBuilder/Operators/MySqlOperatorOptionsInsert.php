@@ -75,7 +75,7 @@ class MySqlOperatorOptionsInsert implements OperatorOptionsInsert
         foreach ($this->fieldNames as $name => $values) {
             foreach ($values as $key => $value) {
                 $queryValues[$key] ??= '';
-                $value = preg_match('~^:[^:\s].+$~iu', $value) ? $value : "'$value'";
+                $value = preg_match('~^:[^:\s].+$~iu', "$value") ? $value : "'$value'";
                 $queryValues[$key] .= (is_numeric($value) ? $value : $value) . ',';
             }
         }

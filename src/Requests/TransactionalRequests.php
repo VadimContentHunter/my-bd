@@ -29,27 +29,56 @@ class TransactionalRequests implements Request
      */
     protected array $queries = [];
 
+    /**
+     * @var mixed[]
+     */
+    protected array $resultStore = [];
+
     protected ?PDO $databaseHost = null;
 
     public function __construct(
         protected ConnectorInterface $connector
     ) {
         $this->databaseHost = $connector->connect();
-        $this->databaseHost->beginTransaction() ?: throw new MyDbException('Error, unable to start transaction');
+        $this->beginTransaction();
+    }
+
+    public function beginTransaction(): TransactionalRequests
+    {
+        $this->databaseHost?->beginTransaction() ?: throw new MyDbException('Error, unable to start transaction');
+        return $this;
     }
 
     /**
-     * @param array<array<string,mixed>> $parameters
+     * @param array<array<string,mixed[]>> $parameters
      */
     public function addQuery(SQLQueryBuilder $query_builder, ?string $class_name = null, array $parameters = []): TransactionalRequests
     {
         $storage = new stdClass();
         $storage->query = $query_builder->getQuery();
-        $storage->parameters = $parameters;
+        $storage->parameters = $this->getFormattedParameters($parameters);
         $storage->className = $class_name;
+        $storage->result = null;
 
         $this->queries[] = $storage;
         return $this;
+    }
+
+    /**
+     * @param  array<array<string,mixed[]>> $parameters
+     * @return array<array<string,mixed[]>>
+     */
+    protected function getFormattedParameters(array $parameters): array
+    {
+        $queryValues = [];
+        foreach ($parameters as $name => $values) {
+            foreach ($values as $key => $value) {
+                $queryValues[$key] ??= [];
+                $queryValues[$key] += [$name => $value];
+            }
+        }
+
+        return $queryValues;
     }
 
     /**
@@ -62,7 +91,13 @@ class TransactionalRequests implements Request
             throw new MyDbException("Error, you need to connect to the database");
         }
 
+        if (!$this->databaseHost->inTransaction()) {
+            $this->beginTransaction();
+        }
+
         try {
+            $this->databaseHost->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
             $result = [];
 
             foreach ($this->queries as $i => $storage) {
@@ -70,12 +105,15 @@ class TransactionalRequests implements Request
                 if (count($storage->parameters) === 0) {
                     $sth->execute();
                 } else {
-                    foreach ($storage->parameters as $j => $parameter) {
-                        $sth->execute($parameter);
+                    foreach ($storage->parameters as $j => $parameters) {
+                        $sth->execute($parameters);
                     }
                 }
 
-                $result[] = $storage->className === null ? $sth->fetchAll() : $sth->fetchAll(PDO::FETCH_CLASS, $storage->className);
+                $data = $storage->className === null ? $sth->fetchAll() : $sth->fetchAll(PDO::FETCH_CLASS, $storage->className);
+                $result[] = $data;
+                $storage->result = $data;
+                $this->resultStore[] = $storage;
             }
 
             $this->databaseHost->commit() ?: throw new MyDbException('Error, unable to commit');
@@ -85,5 +123,35 @@ class TransactionalRequests implements Request
             $this->databaseHost->rollBack() ?: throw new MyDbException('Error, transaction cannot be rolled back');
             throw new MyDbException($e->getMessage(), $e->getCode(), $e->getPrevious());
         }
+    }
+
+    /**
+     * @uses TransactionalRequests::send() для записи результатов в поле $this->resultStore
+     *
+     * @return array<mixed>|null Возвращает первый найденный элемент иначе null
+     */
+    public function sendWithControlResultByQuery(string $searchByQuery): array|null
+    {
+        $this->send();
+
+        foreach ($this->resultStore as $index => $storage) {
+            if (strcmp($storage->query, $searchByQuery) === 0) {
+                return $storage->result;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @uses TransactionalRequests::send() для записи результатов в поле $this->resultStore
+     *
+     * @return array<mixed>|null Возвращает первый найденный элемент иначе null
+     */
+    public function sendWithControlResultByIndex(int $index): array|null
+    {
+        $this->send();
+
+        return $this->resultStore[$index]->result ?? null;
     }
 }

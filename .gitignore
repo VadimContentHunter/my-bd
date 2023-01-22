@@ -2,5 +2,9 @@
 /vendor
 /index.php
 /phpDocumentor.phar
+/.github/workflows
 /branch-blocker.php
-/class diagram.drawio
+/composer.lock
+/phpcs.xml.dist
+/phpstan.neon.dist
+/phpunit.xml

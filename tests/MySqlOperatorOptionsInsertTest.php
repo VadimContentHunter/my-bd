@@ -31,7 +31,7 @@ class MySqlOperatorOptionsInsertTest extends TestCase
     {
         foreach ($data as $field => $values) {
             foreach ($values as $key => $value) {
-                $this->mySqlOperatorOptionsInsertFake->addValues($field, $value);
+                $this->mySqlOperatorOptionsInsertFake->addValue($field, $value);
             }
         }
 
@@ -134,7 +134,7 @@ class MySqlOperatorOptionsInsertTest extends TestCase
     {
         foreach ($data as $field => $values) {
             foreach ($values as $key => $value) {
-                $this->mySqlOperatorOptionsInsertFake->addValues($field, $value);
+                $this->mySqlOperatorOptionsInsertFake->addValue($field, $value);
             }
         }
 

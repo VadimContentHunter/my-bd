@@ -12,7 +12,7 @@ use vadimcontenthunter\MyDB\Interfaces\SQLQueryBuilder\SQLQueryBuilder;
  */
 interface OperatorOptionsInsert extends SQLQueryBuilder
 {
-    public function addValues(string $field_name, string $value): OperatorOptionsInsert;
+    public function addValue(string $field_name, string $value): OperatorOptionsInsert;
 
     /**
      * @param array<string,array<string>|string> $values

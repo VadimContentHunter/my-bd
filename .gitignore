@@ -3,3 +3,9 @@
 /vendor
 /index.php
 /phpDocumentor.phar
+/.github/workflows
+/branch-blocker.php
+/composer.lock
+/phpcs.xml.dist
+/phpstan.neon.dist
+/phpunit.xml

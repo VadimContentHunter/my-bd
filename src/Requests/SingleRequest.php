@@ -66,6 +66,9 @@ class SingleRequest implements Request
         return $this;
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function send(): array
     {
         if ($this->databaseHost === null) {

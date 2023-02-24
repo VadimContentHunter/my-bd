@@ -96,4 +96,9 @@ class Connector implements ConnectorInterface
         self::$totalConnected = 0;
         return $this;
     }
+
+    public function getDatabaseName(): string
+    {
+        return $this->dbName ?? '';
+    }
 }

@@ -18,6 +18,8 @@ interface ConnectorInterface
      */
     public function connect(): PDO;
 
+    public function getDatabaseName(): string;
+
     public function getNumConnected(): int;
 
     public function getTotalConnected(): int;

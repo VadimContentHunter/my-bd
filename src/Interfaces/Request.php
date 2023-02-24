@@ -10,5 +10,5 @@ namespace vadimcontenthunter\MyDB\Interfaces;
  */
 interface Request
 {
-    public function send(): mixed;
+    public function send(): array;
 }

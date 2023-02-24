@@ -66,7 +66,7 @@ class SingleRequest implements Request
         return $this;
     }
 
-    public function send(): mixed
+    public function send(): array
     {
         if ($this->databaseHost === null) {
             throw new MyDbException("Error, you need to connect to the database");

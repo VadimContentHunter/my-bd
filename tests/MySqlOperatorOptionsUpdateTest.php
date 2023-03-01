@@ -34,8 +34,7 @@ class MySqlOperatorOptionsUpdateTest extends TestCase
         foreach ($data as $id => $parameters) {
             $this->MySqlOperatorOptionsUpdateFake->set(
                 $parameters[0],
-                $parameters[1],
-                $parameters[2] ?? true,
+                $parameters[1]
             );
         }
 
@@ -50,14 +49,14 @@ class MySqlOperatorOptionsUpdateTest extends TestCase
         return [
             'test 1' => [
                 [
-                    [ 'ProductId', 3, false ],
+                    [ 'ProductId', 3],
                     [ 'Manufacturer', 'Samsung Inc.' ],
-                    [ 'ProductCount', 'ProductCount + 3', false ],
+                    [ 'ProductCount', 'ProductCount + 3'],
                 ],
                 [
                     [ 'ProductId' => 3 ],
                     [ 'Manufacturer' => "'Samsung Inc.'" ],
-                    [ 'ProductCount' => 'ProductCount + 3' ],
+                    [ 'ProductCount' => "'ProductCount + 3'" ],
                 ],
             ]
         ];
@@ -79,7 +78,6 @@ class MySqlOperatorOptionsUpdateTest extends TestCase
             $this->MySqlOperatorOptionsUpdateFake->set(
                 $parameters[0],
                 $parameters[1],
-                $parameters[2] ?? true,
             );
         }
 
@@ -94,11 +92,11 @@ class MySqlOperatorOptionsUpdateTest extends TestCase
         return [
             'test 1' => [
                 [
-                    [ 'ProductId', 3, false ],
+                    [ 'ProductId', 3],
                     [ 'Manufacturer', 'Samsung Inc.' ],
-                    [ 'ProductCount', 'ProductCount + 3', false ],
+                    [ 'ProductCount', 'ProductCount + 3'],
                 ],
-                " SET ProductId=3,Manufacturer='Samsung Inc.',ProductCount=ProductCount + 3"
+                " SET ProductId=3,Manufacturer='Samsung Inc.',ProductCount='ProductCount + 3'"
             ]
         ];
     }

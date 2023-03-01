@@ -271,6 +271,19 @@ class DbTest extends TestCase
             )
             ->send();
 
+        $this->myDb->singleRequest()
+            ->singleQuery(
+                (new DataMySQLQueryBuilder())
+                    ->update('Customers')
+                        ->set('Age', ':age')
+                        ->set('LastName', ':last_name')
+                        ->getOperators()
+                            ->where('Id = 2')
+            )
+            ->addParameter(':age', '20')
+            ->addParameter(':last_name', 'Макарук')
+            ->send();
+
         $this->assertTrue(true);
     }
 

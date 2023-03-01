@@ -138,7 +138,7 @@ class MySqlOperators implements Operators
                         ?? throw new QueryBuilderException('Error, invalid expression.');
         if (
             preg_match(
-                '~(?<value_a>[\w\-+*/%():.?]+)(?<operator>' . implode("|", $this->operators) . ')(?<value_b>[\w\-+*/%():.?]+)~iu',
+                '~(?<value_a>[\w\-+*/%():.?]+)(?<operator>' . implode("|", $this->operators) . ')(?<value_b>[\w\-+"\'@*/%():.?]+)~iu',
                 $expression,
                 $matches
             )

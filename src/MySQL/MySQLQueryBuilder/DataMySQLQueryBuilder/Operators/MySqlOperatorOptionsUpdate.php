@@ -33,12 +33,12 @@ class MySqlOperatorOptionsUpdate implements OperatorOptionsUpdate
         return $this->query;
     }
 
-    public function set(string $field_name, string|int $value, bool $wrapInQuotes = true): OperatorOptionsUpdate
+    public function set(string $field_name, string|int $value): OperatorOptionsUpdate
     {
-        if ($wrapInQuotes) {
-            $this->fieldsValues[] = [$field_name => "'" . $value . "'"];
-        } else {
+        if (is_string($value) && preg_match('~^:~u', $value)) {
             $this->fieldsValues[] = [$field_name => $value];
+        } else {
+            $this->fieldsValues[] = [$field_name => "'" . $value . "'"];
         }
         return $this;
     }

@@ -151,8 +151,8 @@ class MySqlOperatorOptionsCreate implements OperatorOptionsCreate
 
         if (preg_match("~CONSTRAINT\s" . $consrtaint_name . "\s~iu", $this->query)) {
             throw new QueryBuilderException('Error, name for CONSTRAINT already taken.');
-        } elseif (preg_match("~FOREIGN KEY~iu", $this->query)) {
-            throw new QueryBuilderException('Error, FOREIGN KEY statement already specified.');
+            // } elseif (preg_match("~FOREIGN KEY~iu", $this->query)) {
+            // throw new QueryBuilderException('Error, FOREIGN KEY statement already specified.');
         } elseif (preg_match("~^CREATE TABLE \w+\s?\((?<values>.+)\).*~iu", $this->query, $matches)) {
             $foreignKey = 'CONSTRAINT ' . $consrtaint_name . ' FOREIGN KEY(' . implode(",", $field_names)
                             . ') REFERENCES ' . $references_table_name . ' (' . implode(",", $references_fields) . ')'

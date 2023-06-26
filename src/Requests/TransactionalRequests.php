@@ -50,7 +50,7 @@ class TransactionalRequests implements Request
     }
 
     /**
-     * @param array<array<string,mixed[]>> $parameters
+     * @param mixed[] $parameters
      */
     public function addQuery(SQLQueryBuilder $query_builder, ?string $class_name = null, array $parameters = []): TransactionalRequests
     {
@@ -65,8 +65,8 @@ class TransactionalRequests implements Request
     }
 
     /**
-     * @param  array<array<string,mixed[]>> $parameters
-     * @return array<array<string,mixed[]>>
+     * @param  mixed[] $parameters
+     * @return mixed[]
      */
     protected function getFormattedParameters(array $parameters): array
     {
